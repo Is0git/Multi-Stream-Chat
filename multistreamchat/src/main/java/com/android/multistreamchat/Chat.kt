@@ -1,5 +1,8 @@
 package com.android.multistreamchat
 
+import android.util.Log
+import com.android.multistreamchat.chat_output_handler.OutputHandler
+import com.android.multistreamchat.chat_output_handler.TwitchOutputHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -10,6 +13,7 @@ import java.io.BufferedWriter
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.Socket
+import kotlin.reflect.KClass
 
 class Chat private constructor(val host: String, val port: Int, var username: String? = null) :
     ChatStatesListener {
@@ -21,6 +25,8 @@ class Chat private constructor(val host: String, val port: Int, var username: St
     private var dataListener: DataListener? = null
 
     lateinit var chatParser: ChatParser
+
+    private var outputHandler: OutputHandler<ChatParser.Message>? = null
 
     private constructor(host: String, port: Int, username: String, token: String) : this(
         host,
@@ -38,7 +44,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
     fun connect(token: String?, name: String, channelName: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            val channel = Channel<String>(Channel.CONFLATED)
+            val channel = Channel<ChatParser.Message>(Channel.CONFLATED)
             try {
                 val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
                 val writer = BufferedWriter(OutputStreamWriter(socket.getOutputStream()))
@@ -55,14 +61,19 @@ class Chat private constructor(val host: String, val port: Int, var username: St
                     while (line != null) {
                         line = reader.readLine()
                         line?.let {
-                            channel.send(it)
+                            when {
+                                line.contains("privmsg", true) -> {
+                                    outputHandler?.handleUserMessage(channel, it)
+                                }
+                                else -> return@let
+                            }
                         }
                     }
                 }
 
                 for (a in channel) {
                     withContext(Dispatchers.Main) {
-                        dataListener?.onSend(a)
+                        dataListener?.onReceive(a)
                     }
                 }
 
@@ -96,6 +107,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
         private var channelName: String? = null
         private var autoConnect: Boolean = false
         private var dataListener: DataListener? = null
+        private var outputHandler: OutputHandler<ChatParser.Message>? = null
         var chatParser: ChatParser? = null
 
         fun setHost(host: String): Builder {
@@ -130,10 +142,16 @@ class Chat private constructor(val host: String, val port: Int, var username: St
             return this
         }
 
+        fun setOutputHandler(outputHandler: OutputHandler<ChatParser.Message>) : Builder {
+            this.outputHandler = outputHandler
+            return this
+        }
+
         fun addDataListener(dataListener: DataListener): Builder {
             this.dataListener = dataListener
             return this
         }
+
 
         inline fun <reified T : ChatParser> setChatParser(parserClass: Class<in T>): Builder {
             val parse = when {
@@ -159,6 +177,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
             chat.apply {
                 dataListener = this@Builder.dataListener
                 chatParser = this@Builder.chatParser ?: TwitchChatParser()
+                chat.outputHandler = this@Builder.outputHandler ?: TwitchOutputHandler()
                 if (autoConnect && channelName != null) connect(
                     this.token,
                     this.username!!,

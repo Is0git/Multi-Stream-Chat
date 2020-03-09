@@ -1,5 +1,5 @@
 package com.android.multistreamchat
 
 interface DataListener {
-    fun onSend(line: String?)
+    fun onReceive(message: ChatParser.Message)
 }
