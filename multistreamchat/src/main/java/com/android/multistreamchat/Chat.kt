@@ -1,22 +1,32 @@
 package com.android.multistreamchat
 
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.Socket
 
-    class Chat private constructor( val host: String,  val port: Int, var username: String? = null) : ChatStatesListener {
+class Chat private constructor(val host: String, val port: Int, var username: String? = null) :
+    ChatStatesListener {
 
-     var token: String? = null
+    var token: String? = null
 
     private val socket: Socket by lazy { Socket(host, port) }
 
-    private constructor(host: String, port: Int, username: String, token: String) : this(host,  port,  username) {
+    private var dataListener: DataListener? = null
+
+    lateinit var chatParser: ChatParser
+
+    private constructor(host: String, port: Int, username: String, token: String) : this(
+        host,
+        port,
+        username
+    ) {
         this.token = token
 
     }
@@ -28,26 +38,39 @@ import java.net.Socket
 
     fun connect(token: String?, name: String, channelName: String) {
         CoroutineScope(Dispatchers.IO).launch {
+            val channel = Channel<String>(Channel.CONFLATED)
             try {
                 val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
                 val writer = BufferedWriter(OutputStreamWriter(socket.getOutputStream()))
 
                 writer.apply {
-                 if (token != null)   write("PASS oauth:${token}\n")
+                    if (token != null) write("PASS oauth:${token}\n")
                     write("NICK $name\n")
                     write("JOIN #$channelName\n")
                     flush()
                 }
 
-                var line: String? = ""
-                while (line != null) {
-                    line = reader.readLine()
-                    Log.d("LINE", "$line")
+                launch {
+                    var line: String? = ""
+                    while (line != null) {
+                        line = reader.readLine()
+                        line?.let {
+                            channel.send(it)
+                        }
+                    }
                 }
 
+                for (a in channel) {
+                    withContext(Dispatchers.Main) {
+                        dataListener?.onSend(a)
+                    }
+                }
 
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                channel.close()
+                socket.close()
             }
 
         }
@@ -60,6 +83,10 @@ import java.net.Socket
 
     }
 
+    override fun onSend(line: String) {
+
+    }
+
     class Builder {
         private var host: String? = null
         private var port: Int? = null
@@ -68,6 +95,8 @@ import java.net.Socket
         private var username: String? = null
         private var channelName: String? = null
         private var autoConnect: Boolean = false
+        private var dataListener: DataListener? = null
+        var chatParser: ChatParser? = null
 
         fun setHost(host: String): Builder {
             this.host = host
@@ -101,6 +130,21 @@ import java.net.Socket
             return this
         }
 
+        fun addDataListener(dataListener: DataListener): Builder {
+            this.dataListener = dataListener
+            return this
+        }
+
+        inline fun <reified T : ChatParser> setChatParser(parserClass: Class<in T>): Builder {
+            val parse = when {
+                parserClass.isAssignableFrom(TwitchChatParser::class.java) -> TwitchChatParser()
+                else -> TwitchChatParser()
+            }
+            this.chatParser = parse
+            return this
+        }
+
+
         fun build(): Chat {
             host ?: throw IllegalStateException("host was not set")
             port ?: throw IllegalStateException("port was not set")
@@ -111,9 +155,17 @@ import java.net.Socket
                 isAnonymous -> Chat(host!!, port!!, "justinfan12345")
                 else -> Chat(host!!, port!!, username!!, token!!)
             }
-            if (autoConnect && channelName != null) chat.apply {
-                connect(this.token, this.username!!, channelName!!)
+
+            chat.apply {
+                dataListener = this@Builder.dataListener
+                chatParser = this@Builder.chatParser ?: TwitchChatParser()
+                if (autoConnect && channelName != null) connect(
+                    this.token,
+                    this.username!!,
+                    channelName!!
+                )
             }
+
             return chat
         }
     }

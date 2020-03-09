@@ -1,9 +1,9 @@
 package com.android.multistreamchat
 
-class ChatParser {
+abstract class ChatParser {
 
-    fun parseUserMessage(message: String) {
+    abstract fun parseUserMessage(message: String)
 
-    }
+    abstract fun unknownMessage(message: String)
 
 }
