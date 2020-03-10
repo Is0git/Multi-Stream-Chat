@@ -26,7 +26,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
     lateinit var chatParser: ChatParser
 
-    private var outputHandler: OutputHandler<ChatParser.Message>? = null
+    private var outputHandler: OutputHandler? = null
 
     private constructor(host: String, port: Int, username: String, token: String) : this(
         host,
@@ -53,6 +53,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
                     if (token != null) write("PASS oauth:${token}\n")
                     write("NICK $name\n")
                     write("JOIN #$channelName\n")
+                    write("CAP REQ :twitch.tv/tags\n")
                     flush()
                 }
 
@@ -63,6 +64,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
                         line?.let {
                             when {
                                 line.contains("privmsg", true) -> {
+                                    Log.d("LINE", "$it")
                                     outputHandler?.handleUserMessage(channel, it)
                                 }
                                 else -> return@let
@@ -107,7 +109,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
         private var channelName: String? = null
         private var autoConnect: Boolean = false
         private var dataListener: DataListener? = null
-        private var outputHandler: OutputHandler<ChatParser.Message>? = null
+        private var outputHandler: OutputHandler? = null
         var chatParser: ChatParser? = null
 
         fun setHost(host: String): Builder {
@@ -142,7 +144,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
             return this
         }
 
-        fun setOutputHandler(outputHandler: OutputHandler<ChatParser.Message>) : Builder {
+        fun setOutputHandler(outputHandler: OutputHandler) : Builder {
             this.outputHandler = outputHandler
             return this
         }
@@ -153,7 +155,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
         }
 
 
-        inline fun <reified T : ChatParser> setChatParser(parserClass: Class<in T>): Builder {
+        inline fun <reified T : ChatParser> setChatParser(parserClass: Class<T>): Builder {
             val parse = when {
                 parserClass.isAssignableFrom(TwitchChatParser::class.java) -> TwitchChatParser()
                 else -> TwitchChatParser()
@@ -184,7 +186,6 @@ class Chat private constructor(val host: String, val port: Int, var username: St
                     channelName!!
                 )
             }
-
             return chat
         }
     }

@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         chatAdapter = ChatAdapter()
         binding.list.adapter = chatAdapter
         Chat.Builder()
-            .autoConnect("forsen")
+            .autoConnect("drdisrespect")
             .setClient(Chat.HOST, Chat.PORT)
             .setUserToken("7uyg0kooxcagt096sig5f2i023mrdk")
             .setUsername("is0xxx")

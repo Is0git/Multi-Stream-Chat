@@ -1,5 +1,6 @@
 package com.android.mutlistreamchat
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ListAdapter
@@ -36,6 +37,7 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.MyViewHolder>() {
         holder.binding.text.text = linesList[position].run {
             "$username: $message"
         }
+        holder.binding.text.setTextColor(Color.parseColor(linesList[position].usernameColor))
     }
 
 
