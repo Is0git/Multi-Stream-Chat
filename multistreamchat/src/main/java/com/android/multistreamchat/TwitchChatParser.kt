@@ -4,14 +4,13 @@ open class TwitchChatParser : ChatParser() {
     //    """/w+=w*;"""
     companion object {
         const val userMessageRegexPattern = "([\\w-#]+=[\\w-#/]+)"
+        const val privMsgPattern = "(PRIVMSG #[\\w]*\\s:)"
     }
-
 
     var userMessageRegex = userMessageRegexPattern.toRegex()
     override fun parseUserMessage(message: String): Map<String, String> {
-        val splitted = message.split('!', '@', '#', ':', limit = 6)
-        val res = userMessageRegex.findAll(message, 1).toMap {
-            var equalsPosition: Int = 0
+      val resultMap = userMessageRegex.findAll(message, 1).toMap {
+            var equalsPosition = 0
             for (a in 0 until it.count()) {
                 if (it[a] == '=') {
                     equalsPosition = a
@@ -20,7 +19,9 @@ open class TwitchChatParser : ChatParser() {
             }
             Pair(it.slice(0 until equalsPosition), it.slice(equalsPosition + 1 until it.count()))
         }
-        return res
+        val privMsg = message.split(privMsgPattern.toRegex(), 2)
+        resultMap["message"] = privMsg[1]
+        return resultMap
     }
 
     override fun unknownMessage(message: String) {
@@ -33,7 +34,7 @@ open class TwitchChatParser : ChatParser() {
 
 }
 
-fun Sequence<MatchResult>.toMap(split: (value: String) -> Pair<String, String>): Map<String, String> {
+fun Sequence<MatchResult>.toMap(split: (value: String) -> Pair<String, String>): MutableMap<String, String> {
     val map = mutableMapOf<String, String>()
     this.forEach {
         split(it.value).also { pair ->
