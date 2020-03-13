@@ -1,13 +1,13 @@
 package com.android.mutlistreamchat
 
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.android.multistreamchat.Chat
-import com.android.multistreamchat.ChatParser
+import com.android.multistreamchat.chat_parser.ChatParser
 import com.android.multistreamchat.DataListener
-import com.android.multistreamchat.TwitchChatParser
+import com.android.multistreamchat.chat_parser.TwitchChatParser
 import com.android.mutlistreamchat.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -17,10 +17,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        chatAdapter = ChatAdapter()
-        binding.list.adapter = chatAdapter
-        Chat.Builder()
-            .autoConnect("nickeh30")
+
+        val chat =Chat.Builder()
+            .autoConnect("is0xxx")
             .setClient(Chat.HOST, Chat.PORT)
             .setUserToken("7uyg0kooxcagt096sig5f2i023mrdk")
             .setUsername("is0xxx")
@@ -30,6 +29,14 @@ class MainActivity : AppCompatActivity() {
                     chatAdapter.addLine(message)
                 }
             })
-            .build()
+            .build(this)
+
+        chatAdapter = ChatAdapter(chat)
+        binding.list.adapter = chatAdapter
+
+        binding.button.setOnClickListener {
+            Toast.makeText(applicationContext, "DRAW: ${chat.getEmoteById(25)}", Toast.LENGTH_SHORT).show()
+        }
+
     }
 }

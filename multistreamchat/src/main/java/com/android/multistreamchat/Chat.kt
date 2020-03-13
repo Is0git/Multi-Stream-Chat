@@ -1,8 +1,12 @@
 package com.android.multistreamchat
 
+import android.content.Context
 import android.util.Log
+import com.android.multistreamchat.chat_emotes.TwitchEmoteManager
 import com.android.multistreamchat.chat_output_handler.OutputHandler
 import com.android.multistreamchat.chat_output_handler.TwitchOutputHandler
+import com.android.multistreamchat.chat_parser.ChatParser
+import com.android.multistreamchat.chat_parser.TwitchChatParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -13,7 +17,6 @@ import java.io.BufferedWriter
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.Socket
-import kotlin.reflect.KClass
 
 class Chat private constructor(val host: String, val port: Int, var username: String? = null) :
     ChatStatesListener {
@@ -89,6 +92,10 @@ class Chat private constructor(val host: String, val port: Int, var username: St
         }
     }
 
+    fun getEmoteById(id: Int) : TwitchEmoteManager.TwitchEmote {
+       return (outputHandler?.emoteManager as TwitchEmoteManager).globalEmotes[id]!!
+    }
+
     override fun onConnected() {
     }
 
@@ -154,7 +161,6 @@ class Chat private constructor(val host: String, val port: Int, var username: St
             return this
         }
 
-
         inline fun <reified T : ChatParser> setChatParser(parserClass: Class<T>): Builder {
             val parse = when {
                 parserClass.isAssignableFrom(TwitchChatParser::class.java) -> TwitchChatParser()
@@ -165,7 +171,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
         }
 
 
-        fun build(): Chat {
+        fun build(context: Context): Chat {
             host ?: throw IllegalStateException("host was not set")
             port ?: throw IllegalStateException("port was not set")
 
@@ -179,7 +185,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
             chat.apply {
                 dataListener = this@Builder.dataListener
                 chatParser = this@Builder.chatParser ?: TwitchChatParser()
-                chat.outputHandler = this@Builder.outputHandler ?: TwitchOutputHandler()
+                chat.outputHandler = this@Builder.outputHandler ?: TwitchOutputHandler(context)
                 if (autoConnect && channelName != null) connect(
                     this.token,
                     this.username!!,

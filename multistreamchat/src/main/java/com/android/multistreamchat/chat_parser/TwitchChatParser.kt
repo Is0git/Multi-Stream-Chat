@@ -1,4 +1,4 @@
-package com.android.multistreamchat
+package com.android.multistreamchat.chat_parser
 
 open class TwitchChatParser : ChatParser() {
     //    """/w+=w*;"""

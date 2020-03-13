@@ -1,16 +1,17 @@
 package com.android.mutlistreamchat
 
-import android.graphics.Color
+import android.text.SpannableString
+import android.text.style.ImageSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ListAdapter
-import androidx.databinding.DataBindingUtil
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.PagerAdapter
-import com.android.multistreamchat.ChatParser
+import com.android.multistreamchat.Chat
+import com.android.multistreamchat.chat_parser.ChatParser
 import com.android.mutlistreamchat.databinding.ChatLayoutBinding
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-class ChatAdapter : RecyclerView.Adapter<ChatAdapter.MyViewHolder>() {
+class ChatAdapter(var chat: Chat) : RecyclerView.Adapter<ChatAdapter.MyViewHolder>() {
 
     var linesList: MutableList<ChatParser.Message> = mutableListOf()
 
@@ -33,11 +34,18 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.MyViewHolder>() {
 
     override fun getItemCount(): Int  = linesList.count()
 
+    @ExperimentalCoroutinesApi
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.binding.text.text = linesList[position].run {
-            "$username: $message"
-        }
-        holder.binding.text.setTextColor(Color.parseColor(linesList[position].usernameColor))
+
+        val spannable = SpannableString(linesList[position].message)
+
+        spannable.setSpan(ImageSpan(holder.binding.text.context,
+            chat.getEmoteById(25).imageDrawable?.toBitmap(100, 100)!!
+        ),0, 5,0)
+        holder.binding.text.text = spannable
+
+
+//        holder.binding.text.setTextColor(Color.parseColor(linesList[position].usernameColor))
     }
 
 
