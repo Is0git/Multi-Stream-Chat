@@ -37,12 +37,8 @@ class ChatAdapter(var chat: Chat) : RecyclerView.Adapter<ChatAdapter.MyViewHolde
     @ExperimentalCoroutinesApi
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
-        val spannable = SpannableString(linesList[position].message)
 
-        spannable.setSpan(ImageSpan(holder.binding.text.context,
-            chat.getEmoteById(25).imageDrawable?.toBitmap(100, 100)!!
-        ),0, 5,0)
-        holder.binding.text.text = spannable
+        holder.binding.text.text = linesList[position].spannnableMessage
 
 
 //        holder.binding.text.setTextColor(Color.parseColor(linesList[position].usernameColor))

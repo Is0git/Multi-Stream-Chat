@@ -27,8 +27,6 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
     private var dataListener: DataListener? = null
 
-    lateinit var chatParser: ChatParser
-
     private var outputHandler: OutputHandler? = null
 
     private constructor(host: String, port: Int, username: String, token: String) : this(
@@ -184,8 +182,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
             chat.apply {
                 dataListener = this@Builder.dataListener
-                chatParser = this@Builder.chatParser ?: TwitchChatParser()
-                chat.outputHandler = this@Builder.outputHandler ?: TwitchOutputHandler(context)
+                outputHandler = this@Builder.outputHandler ?: TwitchOutputHandler(context)
                 if (autoConnect && channelName != null) connect(
                     this.token,
                     this.username!!,

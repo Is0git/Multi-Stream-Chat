@@ -8,5 +8,6 @@ interface OutputHandler {
 
    var emoteManager: EmotesManager<*, *>
 
+
    suspend fun handleUserMessage(channel: Channel<ChatParser.Message>, message: String)
 }
