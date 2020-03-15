@@ -21,7 +21,7 @@ abstract class EmotesManager<K, E : EmotesManager.Emote> {
     }
 
 
-    abstract fun createsSpannable(message: String, emotesId: Array<K>?) : Spannable
+    abstract fun createsSpannable(message: String, emotesId: Array<K>?) : Spannable?
 
     open class Emote(var code: String? = null)
 

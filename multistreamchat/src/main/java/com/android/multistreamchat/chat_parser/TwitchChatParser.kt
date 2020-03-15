@@ -30,10 +30,10 @@ open class TwitchChatParser : ChatParser() {
 
     override fun extractEmoteIds(emotesRaw: String?): Array<Int>? {
         var array: Array<Int>?
-        if (emotesRaw == null) return null
+        if (emotesRaw.isNullOrEmpty()) return null
         emotesIdsRegex.findAll(emotesRaw).also {
             if (it.count() == 0) return  null
-            array = Array(it.count() ?: 0) {0}
+            array = Array(it.count()) {0}
             it.forEachIndexed { index: Int, matchResult: MatchResult  ->
                 array!![index] = matchResult.value.dropLast(1).toInt()
             }

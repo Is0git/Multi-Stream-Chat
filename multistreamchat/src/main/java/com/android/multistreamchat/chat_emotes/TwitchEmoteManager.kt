@@ -60,9 +60,10 @@ class TwitchEmoteManager(val context: Context) :
     }
 
 
-    override fun createsSpannable(message: String, emotesId: Array<Int>?): Spannable {
-        val emoteCodeArray: Array<TwitchEmote?> = Array(emotesId?.size ?: 0) { null }
-        emotesId?.forEachIndexed { index, i ->
+    override fun createsSpannable(message: String, emotesId: Array<Int>?): Spannable? {
+        if (emotesId.isNullOrEmpty()) return null
+        val emoteCodeArray: Array<TwitchEmote?> = Array(emotesId.size) { null }
+        emotesId.forEachIndexed { index, i ->
             emoteCodeArray[index] = globalEmotes[i]
         }
 

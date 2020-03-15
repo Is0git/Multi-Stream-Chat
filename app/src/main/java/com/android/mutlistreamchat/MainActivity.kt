@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        val chat =Chat.Builder()
+        val chat = Chat.Builder()
             .autoConnect("is0xxx")
             .setClient(Chat.HOST, Chat.PORT)
             .setUserToken("7uyg0kooxcagt096sig5f2i023mrdk")
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         binding.list.adapter = chatAdapter
 
         binding.button.setOnClickListener {
-            Toast.makeText(applicationContext, "DRAW: ${chat.getEmoteById(25)}", Toast.LENGTH_SHORT).show()
+            chat.typeMessage("saasdsd")
         }
 
     }

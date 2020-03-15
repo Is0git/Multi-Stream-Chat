@@ -13,6 +13,6 @@ abstract class ChatParser {
 
     abstract fun lineType(message: String)
 
-    data class Message(var username: String, val message: String, val channel: String, var usernameColor: String, var spannnableMessage: Spannable)
+    data class Message(var username: String, val message: String, val channel: String, var usernameColor: String, var spannnableMessage: Spannable?)
 
 }
