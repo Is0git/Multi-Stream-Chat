@@ -1,15 +1,16 @@
 package com.android.multistreamchat.chat_output_handler
 
 import android.content.Context
+import com.android.multistreamchat.chat_emotes.EmoteStateListener
 import com.android.multistreamchat.chat_emotes.EmotesManager
 import com.android.multistreamchat.chat_emotes.TwitchEmoteManager
 import com.android.multistreamchat.chat_parser.ChatParser
 import com.android.multistreamchat.chat_parser.TwitchChatParser
 import kotlinx.coroutines.channels.Channel
 
-class TwitchOutputHandler(var context:  Context, override var chatParser: ChatParser) : ChatOutputHandler, TwitchChatParser() {
+class TwitchOutputHandler(context:  Context, override var chatParser: ChatParser, emoteStateListeners: List<EmoteStateListener<*>>? = null) : ChatOutputHandler, TwitchChatParser() {
 
-    override var emoteManager: EmotesManager<*, *> = TwitchEmoteManager(context)
+    override var emoteManager: EmotesManager<*, *> = TwitchEmoteManager(context, emoteStateListeners)
 
     override suspend fun handleUserMessage(channel: Channel<Message>, message: String) {
         parseUserMessage(message).also {

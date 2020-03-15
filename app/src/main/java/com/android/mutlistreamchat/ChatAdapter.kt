@@ -1,17 +1,13 @@
 package com.android.mutlistreamchat
 
-import android.text.SpannableString
-import android.text.style.ImageSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
-import com.android.multistreamchat.Chat
 import com.android.multistreamchat.chat_parser.ChatParser
 import com.android.mutlistreamchat.databinding.ChatLayoutBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-class ChatAdapter(var chat: Chat) : RecyclerView.Adapter<ChatAdapter.MyViewHolder>() {
+class ChatAdapter : RecyclerView.Adapter<ChatAdapter.MyViewHolder>() {
 
     var linesList: MutableList<ChatParser.Message> = mutableListOf()
 

@@ -2,6 +2,7 @@ package com.android.multistreamchat.chat_emotes
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
@@ -16,14 +17,20 @@ import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.launch
 
 
-class TwitchEmoteManager(val context: Context) :
-    EmotesManager<Int, TwitchEmoteManager.TwitchEmote>() {
+class TwitchEmoteManager(val context: Context, emoteStateListener: List<EmoteStateListener<*>>? = null) :
+    EmotesManager<Int, TwitchEmoteManager.TwitchEmote>(emoteStateListener) {
+
 
     private var emoteService: EmotesService =
         RetrofitInstance.getRetrofit("https://api.twitch.tv").create(EmotesService::class.java)
 
     init {
         getGlobalEmotes()
+        emoteDownloaderJob?.invokeOnCompletion {
+            emoteStateListenerList?.forEach {
+                it.onDownloaded(globalEmotes)
+            }
+        }
     }
 
     override fun getGlobalEmotes() {
@@ -73,11 +80,13 @@ class TwitchEmoteManager(val context: Context) :
                 for (i in emoteCodeArray.indices) {
 
                     if (emoteCodeArray[i]?.code == word) {
-                        spannable.append(
-                            word,
-                            ImageSpan(context,  emoteCodeArray[i]?.imageDrawable?.toBitmap(25, 25)!!),
-                            0
-                        )
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            spannable.append(
+                                word,
+                                ImageSpan(context,  emoteCodeArray[i]?.imageDrawable?.toBitmap(25, 25)!!),
+                                0
+                            )
+                        }
                         break
                     } else if (i == emoteCodeArray.count() - 1) spannable.append(word)
                 }

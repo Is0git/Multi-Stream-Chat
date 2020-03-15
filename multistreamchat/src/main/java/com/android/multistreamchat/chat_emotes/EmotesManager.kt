@@ -5,11 +5,12 @@ import android.text.SpannableString
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 
-abstract class EmotesManager<K, E : EmotesManager.Emote> {
+abstract class EmotesManager<K, E>(var emoteStateListenerList: List<EmoteStateListener<*>>? = null) {
 
     var globalEmotes: MutableMap<K, E> = mutableMapOf()
 
     var emoteDownloaderJob: Job? = null
+
 
     abstract fun getGlobalEmotes()
 
@@ -19,7 +20,6 @@ abstract class EmotesManager<K, E : EmotesManager.Emote> {
             null
         }
     }
-
 
     abstract fun createsSpannable(message: String, emotesId: Array<K>?) : Spannable?
 
