@@ -1,6 +1,7 @@
 package com.android.mutlistreamchat
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
@@ -38,7 +39,22 @@ class MainActivity : AppCompatActivity() {
             })
             .addEmoteStateListener(object : EmoteStateListener<Int, TwitchEmoteManager.TwitchEmote> {
                 override fun onDownloaded(emote: Map<Int, TwitchEmoteManager.TwitchEmote>) {
-                   lifecycleScope.launch(Dispatchers.Main) {  emoteAdapter.twitchEmotesList = emote.toList().map { it.second } }
+                   lifecycleScope.launch(Dispatchers.Main) {
+                       emoteAdapter.twitchEmotesList = emote.toList().map { it.second }
+                       binding.progressBar.visibility = View.INVISIBLE
+                   }
+                }
+
+                override fun onStartLoading() {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+
+                override fun onDownloading() {
+
+                }
+
+                override fun onFailed(e: Throwable) {
+
                 }
 
             })

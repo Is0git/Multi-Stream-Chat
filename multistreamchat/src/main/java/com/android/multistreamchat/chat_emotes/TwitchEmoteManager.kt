@@ -15,9 +15,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
-class TwitchEmoteManager(val context: Context, emoteStateListener: List<EmoteStateListener<Int, TwitchEmote>>? = null) :
+class TwitchEmoteManager(val context: Context, val emoteStateListener: List<EmoteStateListener<Int, TwitchEmote>>? = null) :
     EmotesManager<Int, TwitchEmoteManager.TwitchEmote>(emoteStateListener) {
 
 
@@ -27,6 +28,7 @@ class TwitchEmoteManager(val context: Context, emoteStateListener: List<EmoteSta
     init {
         getGlobalEmotes()
         emoteDownloaderJob?.invokeOnCompletion {
+            it?.let { emoteStateListener?.forEach { listener -> listener.onFailed(it) } }
             emoteStateListenerList?.forEach {
                 it.onDownloaded(globalEmotes)
             }
@@ -35,18 +37,28 @@ class TwitchEmoteManager(val context: Context, emoteStateListener: List<EmoteSta
 
     override fun getGlobalEmotes() {
         emoteDownloaderJob = CoroutineScope(Dispatchers.IO).launch {
-            emoteService.getGlobalEmotes(0).also { response ->
 
+            emoteService.getGlobalEmotes(0).also { response ->
+            withContext(Dispatchers.Main) {
+                emoteStateListener?.forEach {
+                    it.onStartLoading()
+                }
+            }
                 val channel = produce(capacity = Channel.RENDEZVOUS) {
+                    emoteStateListener?.forEach {
+                        it.onDownloading()
+                    }
                     response.body()?.emoticon_sets?.`0`?.forEach {
                         val url = "https://static-cdn.jtvnw.net/emoticons/v1/${it.id}/1.0"
                         val drawable = Glide.with(context).load(url).submit().get()
                         send(TwitchEmote(it.id ?: Int.MAX_VALUE, url, drawable, it.code ?: "null"))
                     }
                 }
-                for (twitchEmote in channel) {
-                    globalEmotes[twitchEmote.id] = twitchEmote
-                }
+              withContext(Dispatchers.Main) {
+                  for (twitchEmote in channel) {
+                      globalEmotes[twitchEmote.id] = twitchEmote
+                  }
+              }
             }
         }
     }
