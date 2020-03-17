@@ -1,11 +1,9 @@
 package com.android.multistreamchat.chat_emotes
 
 import android.text.Spannable
-import android.text.SpannableString
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 
-abstract class EmotesManager<K, E>(var emoteStateListenerList: List<EmoteStateListener<*>>? = null) {
+abstract class EmotesManager<K, E : EmotesManager.Emote>(var emoteStateListenerList: List<EmoteStateListener<K, E>>? = null) {
 
     var globalEmotes: MutableMap<K, E> = mutableMapOf()
 

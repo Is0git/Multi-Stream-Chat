@@ -3,6 +3,7 @@ package com.android.mutlistreamchat
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.android.multistreamchat.Chat
 import com.android.multistreamchat.chat_parser.ChatParser
 import com.android.multistreamchat.DataListener
@@ -11,6 +12,8 @@ import com.android.multistreamchat.chat_emotes.EmotesManager
 import com.android.multistreamchat.chat_emotes.TwitchEmoteManager
 import com.android.multistreamchat.chat_parser.TwitchChatParser
 import com.android.mutlistreamchat.databinding.ActivityMainBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         emoteAdapter = EmoteAdapter()
+        binding.emotesList.adapter = emoteAdapter
         val chat = Chat.Builder()
             .autoConnect("is0xxx")
             .setClient(Chat.HOST, Chat.PORT)
@@ -32,11 +36,10 @@ class MainActivity : AppCompatActivity() {
                     chatAdapter.addLine(message)
                 }
             })
-            .addEmoteStateListener(object : EmoteStateListener<Int> {
-                override fun onDownloaded(emote: Map<Int, EmotesManager.Emote>) {
-                    emoteAdapter.twitchEmotesList = (emote.toList().map { it.second }) as List<TwitchEmoteManager.TwitchEmote>
+            .addEmoteStateListener(object : EmoteStateListener<Int, TwitchEmoteManager.TwitchEmote> {
+                override fun onDownloaded(emote: Map<Int, TwitchEmoteManager.TwitchEmote>) {
+                   lifecycleScope.launch(Dispatchers.Main) {  emoteAdapter.twitchEmotesList = emote.toList().map { it.second } }
                 }
-
 
             })
             .build(this)

@@ -8,7 +8,7 @@ import com.android.multistreamchat.chat_parser.ChatParser
 import com.android.multistreamchat.chat_parser.TwitchChatParser
 import kotlinx.coroutines.channels.Channel
 
-class TwitchOutputHandler(context:  Context, override var chatParser: ChatParser, emoteStateListeners: List<EmoteStateListener<*>>? = null) : ChatOutputHandler, TwitchChatParser() {
+class TwitchOutputHandler(context:  Context, override var chatParser: ChatParser, emoteStateListeners: List<EmoteStateListener<Int, TwitchEmoteManager.TwitchEmote>>? = null) : ChatOutputHandler, TwitchChatParser() {
 
     override var emoteManager: EmotesManager<*, *> = TwitchEmoteManager(context, emoteStateListeners)
 

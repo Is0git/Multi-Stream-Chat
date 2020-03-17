@@ -17,7 +17,7 @@ import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.launch
 
 
-class TwitchEmoteManager(val context: Context, emoteStateListener: List<EmoteStateListener<*>>? = null) :
+class TwitchEmoteManager(val context: Context, emoteStateListener: List<EmoteStateListener<Int, TwitchEmote>>? = null) :
     EmotesManager<Int, TwitchEmoteManager.TwitchEmote>(emoteStateListener) {
 
 

@@ -3,6 +3,7 @@ package com.android.multistreamchat
 import android.content.Context
 import android.util.Log
 import com.android.multistreamchat.chat_emotes.EmoteStateListener
+import com.android.multistreamchat.chat_emotes.EmotesManager
 import com.android.multistreamchat.chat_emotes.TwitchEmoteManager
 import com.android.multistreamchat.chat_input_handler.TwitchInputHandler
 import com.android.multistreamchat.chat_output_handler.TwitchOutputHandler
@@ -128,7 +129,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
         private var dataListener: DataListener? = null
         private var chatManager: ChatManager? = null
         var chatParser: ChatParser? = null
-        val emoteStateListeners by lazy { mutableListOf<EmoteStateListener<*>>() }
+        val emoteStateListeners by lazy { mutableListOf<EmoteStateListener<*, *>>() }
 
         fun setHost(host: String): Builder {
             this.host = host
@@ -181,11 +182,12 @@ class Chat private constructor(val host: String, val port: Int, var username: St
             return this
         }
 
-        fun addEmoteStateListener(emoteStateListener: EmoteStateListener<*>) : Builder {
+        fun<K, E: EmotesManager.Emote> addEmoteStateListener(emoteStateListener: EmoteStateListener<K, E>) : Builder {
             emoteStateListeners.add(emoteStateListener)
             return this
         }
 
+        @Suppress("UNCHECKED_CAST")
         fun build(context: Context): Chat {
             host ?: throw IllegalStateException("host was not set")
             port ?: throw IllegalStateException("port was not set")
@@ -199,7 +201,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
             chat.apply {
                 dataListener = this@Builder.dataListener
-                chatManager = this@Builder.chatManager ?: ChatManager(TwitchOutputHandler(context, TwitchChatParser(), emoteStateListeners), TwitchInputHandler())
+                chatManager = this@Builder.chatManager ?: ChatManager(TwitchOutputHandler(context, TwitchChatParser(), emoteStateListeners as List<EmoteStateListener<Int, TwitchEmoteManager.TwitchEmote>>), TwitchInputHandler())
                 channelName = this@Builder.channelName
                 if (autoConnect && channelName != null) connect(
                     this.token,
