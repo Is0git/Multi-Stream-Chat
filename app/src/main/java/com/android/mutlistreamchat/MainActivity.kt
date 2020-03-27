@@ -9,8 +9,7 @@ import com.android.multistreamchat.Chat
 import com.android.multistreamchat.chat_parser.ChatParser
 import com.android.multistreamchat.DataListener
 import com.android.multistreamchat.chat_emotes.EmoteStateListener
-import com.android.multistreamchat.chat_emotes.EmotesManager
-import com.android.multistreamchat.chat_emotes.TwitchEmoteManager
+import com.android.multistreamchat.chat_emotes.TwitchEmotesManager
 import com.android.multistreamchat.chat_parser.TwitchChatParser
 import com.android.mutlistreamchat.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
@@ -37,8 +36,8 @@ class MainActivity : AppCompatActivity() {
                     chatAdapter.addLine(message)
                 }
             })
-            .addEmoteStateListener(object : EmoteStateListener<Int, TwitchEmoteManager.TwitchEmote> {
-                override fun onDownloaded(emote: Map<Int, TwitchEmoteManager.TwitchEmote>) {
+            .addEmoteStateListener(object : EmoteStateListener<Int, TwitchEmotesManager.TwitchEmote> {
+                override fun onDownloaded(emote: Map<Int, TwitchEmotesManager.TwitchEmote>) {
                    lifecycleScope.launch(Dispatchers.Main) {
                        emoteAdapter.twitchEmotesList = emote.toList().map { it.second }
                        binding.progressBar.visibility = View.INVISIBLE

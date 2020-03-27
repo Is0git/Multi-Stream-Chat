@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.android.multistreamchat.chat_emotes.EmoteStateListener
 import com.android.multistreamchat.chat_emotes.EmotesManager
-import com.android.multistreamchat.chat_emotes.TwitchEmoteManager
+import com.android.multistreamchat.chat_emotes.TwitchEmotesManager
 import com.android.multistreamchat.chat_input_handler.TwitchInputHandler
 import com.android.multistreamchat.chat_output_handler.TwitchOutputHandler
 import com.android.multistreamchat.chat_parser.ChatParser
@@ -41,6 +41,10 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
     private var chatManager: ChatManager? = null
 
+    private var readSocket: Socket? = null
+
+    private var writeSocket: Socket? = null
+
     companion object {
         const val HOST = "irc.chat.twitch.tv"
         const val PORT = 6667
@@ -53,7 +57,6 @@ class Chat private constructor(val host: String, val port: Int, var username: St
             try {
                 val reader = BufferedReader(InputStreamReader(socket?.getInputStream()))
                 val writer = BufferedWriter(OutputStreamWriter(socket?.getOutputStream()))
-
                 writer.apply {
                     if (token != null) write("PASS oauth:${token}\n")
                     write("NICK $name\n")
@@ -96,15 +99,11 @@ class Chat private constructor(val host: String, val port: Int, var username: St
     }
 
     fun typeMessage(message: String) {
-        chatManager?.writeMessage(
-            socket ?: return,
-            message,
-            channelName ?: throw KotlinNullPointerException("NO CHANNEL NAME PROVIDED")
-        )
+        chatManager?.writeMessage(message)
     }
 
-    fun getEmoteById(id: Int): TwitchEmoteManager.TwitchEmote {
-        return (chatManager?.emoteManager as TwitchEmoteManager).globalEmotes[id]!!
+    fun getEmoteById(id: Int): TwitchEmotesManager.TwitchEmote {
+        return (chatManager?.emoteManager as TwitchEmotesManager).globalEmotes[id]!!
     }
 
     override fun onConnected() {
@@ -201,7 +200,14 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
             chat.apply {
                 dataListener = this@Builder.dataListener
-                chatManager = this@Builder.chatManager ?: ChatManager(TwitchOutputHandler(context, TwitchChatParser(), emoteStateListeners as List<EmoteStateListener<Int, TwitchEmoteManager.TwitchEmote>>), TwitchInputHandler())
+                chatManager = this@Builder.chatManager ?: ChatManager(
+                    TwitchOutputHandler(
+                        context,
+                        TwitchChatParser(),
+                        emoteStateListeners as List<EmoteStateListener<Int, TwitchEmotesManager.TwitchEmote>>
+                    ),
+                    TwitchInputHandler()
+                )
                 channelName = this@Builder.channelName
                 if (autoConnect && channelName != null) connect(
                     this.token,

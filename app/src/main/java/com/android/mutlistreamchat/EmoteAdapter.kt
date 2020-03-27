@@ -3,12 +3,12 @@ package com.android.mutlistreamchat
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.android.multistreamchat.chat_emotes.TwitchEmoteManager
+import com.android.multistreamchat.chat_emotes.TwitchEmotesManager
 import com.android.mutlistreamchat.databinding.EmoteItemLayoutBinding
 
 class EmoteAdapter : RecyclerView.Adapter<EmoteAdapter.MyViewHolder>() {
 
-    var twitchEmotesList: List<TwitchEmoteManager.TwitchEmote>? = null
+    var twitchEmotesList: List<TwitchEmotesManager.TwitchEmote>? = null
     set(value) {
         field= value
         notifyDataSetChanged()

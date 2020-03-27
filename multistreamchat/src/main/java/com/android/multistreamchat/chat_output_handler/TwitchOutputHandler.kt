@@ -1,22 +1,18 @@
 package com.android.multistreamchat.chat_output_handler
 
-import android.content.Context
-import com.android.multistreamchat.chat_emotes.EmoteStateListener
 import com.android.multistreamchat.chat_emotes.EmotesManager
-import com.android.multistreamchat.chat_emotes.TwitchEmoteManager
+import com.android.multistreamchat.chat_emotes.TwitchEmotesManager
 import com.android.multistreamchat.chat_parser.ChatParser
-import com.android.multistreamchat.chat_parser.TwitchChatParser
 import kotlinx.coroutines.channels.Channel
 
-class TwitchOutputHandler(context:  Context, override var chatParser: ChatParser, emoteStateListeners: List<EmoteStateListener<Int, TwitchEmoteManager.TwitchEmote>>? = null) : ChatOutputHandler, TwitchChatParser() {
+class TwitchOutputHandler(chatParser: ChatParser, emotesManager: EmotesManager<*,*>) : ChatOutputHandler(chatParser, emotesManager) {
 
-    override var emoteManager: EmotesManager<*, *> = TwitchEmoteManager(context, emoteStateListeners)
-
-    override suspend fun handleUserMessage(channel: Channel<Message>, message: String) {
-        parseUserMessage(message).also {
-            val spannableUserMessage = (emoteManager as TwitchEmoteManager).createsSpannable(it["message"] ?: "sdsd", extractEmoteIds(it["emotes"]))
-            val msg = Message(
-                it["display-name"]!!,
+    override suspend fun handleUserMessage(channel: Channel<ChatParser.Message>, message: String) {
+        chatParser?.parseUserMessage(message).also {
+            val spannableUserMessage = (emotesManager as TwitchEmotesManager).createsSpannable(
+                it?.get("message") ?: "sdsd", chatParser?.extractEmoteIds(it!!["emotes"]))
+            val msg = ChatParser.Message(
+                it?.get("display-name")!!,
                 it["message"]!!,
                 it["display-name"]!!,
                 it["color"] ?: "#000000",
@@ -25,5 +21,4 @@ class TwitchOutputHandler(context:  Context, override var chatParser: ChatParser
             channel.send(msg)
         }
     }
-
 }

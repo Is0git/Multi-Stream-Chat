@@ -8,7 +8,7 @@ import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
 import androidx.core.graphics.drawable.toBitmap
 import com.android.multistreamchat.api.RetrofitInstance
-import com.android.multistreamchat.api.services.EmotesService
+import com.android.multistreamchat.api.twitch.services.EmotesService
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class TwitchEmoteManager(val context: Context, val emoteStateListener: List<EmoteStateListener<Int, TwitchEmote>>? = null) :
-    EmotesManager<Int, TwitchEmoteManager.TwitchEmote>(emoteStateListener) {
+class TwitchEmotesManager(val context: Context, val emoteStateListener: List<EmoteStateListener<Int, TwitchEmote>>? = null) :
+    EmotesManager<Int, TwitchEmotesManager.TwitchEmote>(emoteStateListener) {
 
 
     private var emoteService: EmotesService =
@@ -27,10 +27,10 @@ class TwitchEmoteManager(val context: Context, val emoteStateListener: List<Emot
 
     init {
         getGlobalEmotes()
-        emoteDownloaderJob?.invokeOnCompletion {
-            it?.let { emoteStateListener?.forEach { listener -> listener.onFailed(it) } }
+        emoteDownloaderJob?.invokeOnCompletion { throwable ->
+            throwable?.let { emoteStateListener?.forEach { listener -> listener.onFailed(it) } }
             emoteStateListenerList?.forEach {
-                it.onDownloaded(globalEmotes)
+                it.onComplete(globalEmotes)
             }
         }
     }
@@ -41,14 +41,14 @@ class TwitchEmoteManager(val context: Context, val emoteStateListener: List<Emot
             emoteService.getGlobalEmotes(0).also { response ->
             withContext(Dispatchers.Main) {
                 emoteStateListener?.forEach {
-                    it.onStartLoading()
+                    it.onStartFetch()
                 }
             }
                 val channel = produce(capacity = Channel.RENDEZVOUS) {
                     emoteStateListener?.forEach {
-                        it.onDownloading()
+                        it.onDownload()
                     }
-                    response.body()?.emoticon_sets?.`0`?.forEach {
+                    response.body().emoticon_sets.`0`.forEach {
                         val url = "https://static-cdn.jtvnw.net/emoticons/v1/${it.id}/1.0"
                         val drawable = Glide.with(context).load(url).submit().get()
                         send(TwitchEmote(it.id ?: Int.MAX_VALUE, url, drawable, it.code ?: "null"))
