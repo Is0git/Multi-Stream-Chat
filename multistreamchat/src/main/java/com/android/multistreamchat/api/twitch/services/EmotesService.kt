@@ -1,6 +1,5 @@
 package com.android.multistreamchat.api.twitch.services
 
-import com.android.multistreamchat.api.models.GlobalEmote
 import retrofit2.Response
 import retrofit2.http.*
 

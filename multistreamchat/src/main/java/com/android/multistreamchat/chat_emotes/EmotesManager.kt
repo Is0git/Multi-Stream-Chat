@@ -23,4 +23,8 @@ abstract class EmotesManager<K, E : EmotesManager.Emote>(var emoteStateListenerL
 
     open class Emote(var code: String? = null)
 
+    fun cancelJob() {
+        emoteDownloaderJob?.cancel().also { emoteDownloaderJob = null }
+    }
+
 }

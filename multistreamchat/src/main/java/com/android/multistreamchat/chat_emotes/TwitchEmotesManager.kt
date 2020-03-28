@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class TwitchEmotesManager(val context: Context, val emoteStateListener: List<EmoteStateListener<Int, TwitchEmote>>? = null) :
+class TwitchEmotesManager(private val context: Context, private val emoteStateListener: List<EmoteStateListener<Int, TwitchEmote>>? = null) :
     EmotesManager<Int, TwitchEmotesManager.TwitchEmote>(emoteStateListener) {
 
 
@@ -48,15 +48,14 @@ class TwitchEmotesManager(val context: Context, val emoteStateListener: List<Emo
                     emoteStateListener?.forEach {
                         it.onDownload()
                     }
-                    response.body().emoticon_sets.`0`.forEach {
+                    response.body()?.emoticonSets?.jsonMember19151?.forEach {
                         val url = "https://static-cdn.jtvnw.net/emoticons/v1/${it.id}/1.0"
                         val drawable = Glide.with(context).load(url).submit().get()
                         send(TwitchEmote(it.id ?: Int.MAX_VALUE, url, drawable, it.code ?: "null"))
                     }
                 }
               withContext(Dispatchers.Main) {
-                  for (twitchEmote in channel) {
-                      globalEmotes[twitchEmote.id] = twitchEmote
+                  for (twitchEmote in channel) {                     globalEmotes[twitchEmote.id] = twitchEmote
                   }
               }
             }
@@ -90,7 +89,6 @@ class TwitchEmotesManager(val context: Context, val emoteStateListener: List<Emo
         message.splitToSequence(" ").also {
             it.forEach { word ->
                 for (i in emoteCodeArray.indices) {
-
                     if (emoteCodeArray[i]?.code == word) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             spannable.append(

@@ -1,23 +1,13 @@
 package com.android.multistreamchat
 
 import android.content.Context
-import android.util.Log
 import com.android.multistreamchat.chat_emotes.EmoteStateListener
 import com.android.multistreamchat.chat_emotes.EmotesManager
 import com.android.multistreamchat.chat_emotes.TwitchEmotesManager
-import com.android.multistreamchat.chat_input_handler.TwitchInputHandler
-import com.android.multistreamchat.chat_output_handler.TwitchOutputHandler
 import com.android.multistreamchat.chat_parser.ChatParser
 import com.android.multistreamchat.chat_parser.TwitchChatParser
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.BufferedReader
-import java.io.BufferedWriter
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
+import com.android.multistreamchat.socket.chat_reader.ChatReader
+import com.android.multistreamchat.socket.chat_writer.ChatWriter
 import java.net.Socket
 
 class Chat private constructor(val host: String, val port: Int, var username: String? = null) :
@@ -35,15 +25,9 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
     var token: String? = null
 
-    private val socket: Socket? by lazy { Socket(host, port) }
-
     private var dataListener: DataListener? = null
 
     private var chatManager: ChatManager? = null
-
-    private var readSocket: Socket? = null
-
-    private var writeSocket: Socket? = null
 
     companion object {
         const val HOST = "irc.chat.twitch.tv"
@@ -52,50 +36,9 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
     fun connect(token: String?, name: String, channelName: String) {
         this.channelName = channelName
-        CoroutineScope(Dispatchers.IO).launch {
-            val channel = Channel<ChatParser.Message>(Channel.CONFLATED)
-            try {
-                val reader = BufferedReader(InputStreamReader(socket?.getInputStream()))
-                val writer = BufferedWriter(OutputStreamWriter(socket?.getOutputStream()))
-                writer.apply {
-                    if (token != null) write("PASS oauth:${token}\n")
-                    write("NICK $name\n")
-                    write("CAP REQ :twitch.tv/tags\n")
-                    write("CAP REQ :twitch.tv/commands\n")
-                    write("JOIN #$channelName\n")
-                    flush()
-                }
+        chatManager?.connectReader(channelName)
+        chatManager?.connectWriter(channelName)
 
-                launch {
-                    var line: String? = ""
-                    while (line != null) {
-                        line = reader.readLine()
-                        line?.let {
-                            Log.d("LINE", "$it")
-                            when {
-                                line.contains("privmsg", true) -> {
-                                    chatManager?.handleUserMessage(channel, it)
-                                }
-                                else -> return@let
-                            }
-                        }
-                    }
-                }
-
-                for (a in channel) {
-                    withContext(Dispatchers.Main) {
-                        dataListener?.onReceive(a)
-                    }
-                }
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                channel.close()
-                socket?.close()
-            }
-
-        }
     }
 
     fun typeMessage(message: String) {
@@ -127,8 +70,11 @@ class Chat private constructor(val host: String, val port: Int, var username: St
         private var autoConnect: Boolean = false
         private var dataListener: DataListener? = null
         private var chatManager: ChatManager? = null
+        private var chatWriter: ChatWriter? = null
+        private var chatReader: ChatReader? = null
+        private var emoteManager: EmotesManager<*, *>? = null
         var chatParser: ChatParser? = null
-        val emoteStateListeners by lazy { mutableListOf<EmoteStateListener<*, *>>() }
+        private val emoteStateListeners by lazy { mutableListOf<EmoteStateListener<*, *>>() }
 
         fun setHost(host: String): Builder {
             this.host = host
@@ -181,7 +127,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
             return this
         }
 
-        fun<K, E: EmotesManager.Emote> addEmoteStateListener(emoteStateListener: EmoteStateListener<K, E>) : Builder {
+        fun <K, E : EmotesManager.Emote> addEmoteStateListener(emoteStateListener: EmoteStateListener<K, E>): Builder {
             emoteStateListeners.add(emoteStateListener)
             return this
         }
@@ -200,14 +146,8 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
             chat.apply {
                 dataListener = this@Builder.dataListener
-                chatManager = this@Builder.chatManager ?: ChatManager(
-                    TwitchOutputHandler(
-                        context,
-                        TwitchChatParser(),
-                        emoteStateListeners as List<EmoteStateListener<Int, TwitchEmotesManager.TwitchEmote>>
-                    ),
-                    TwitchInputHandler()
-                )
+                emoteManager = this@Builder.emoteManager ?: TwitchEmotesManager(context, this@Builder.emoteStateListeners as List<EmoteStateListener<Int, TwitchEmotesManager.TwitchEmote>>)
+                chatManager = this@Builder.chatManager
                 channelName = this@Builder.channelName
                 if (autoConnect && channelName != null) connect(
                     this.token,

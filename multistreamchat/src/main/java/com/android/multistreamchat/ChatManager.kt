@@ -1,27 +1,21 @@
 package com.android.multistreamchat
 
 import com.android.multistreamchat.chat_emotes.EmotesManager
-import com.android.multistreamchat.chat_output_handler.ChatOutputHandler
-import com.android.multistreamchat.chat_parser.ChatParser
-import com.android.multistreamchat.input_handler.ChatInputHandler
-import kotlinx.coroutines.channels.Channel
+import com.android.multistreamchat.socket.chat_reader.ChatReader
+import com.android.multistreamchat.socket.chat_writer.ChatWriter
 
-abstract class ChatManager(var emotemanager: EmotesManager<*, *>, var chatOutputHandler: ChatOutputHandler, var chatInputHandler: ChatInputHandler) {
-
-    suspend fun handleUserMessage(channel: Channel<ChatParser.Message>, message: String) {
-        chatOutputHandler.handleUserMessage(channel, message)
-    }
+abstract class ChatManager(var emoteManager: EmotesManager<*, *>, var chatReader: ChatReader, var chatWriter: ChatWriter) {
 
     fun writeMessage(message: String) {
-        chatInputHandler.sendMessage(message)
+        chatWriter.writeMessage(message)
     }
 
-    fun startInputConnection() {
-
+    fun connectWriter(channelName: String) {
+        chatWriter.connect(channelName)
     }
 
-    fun startOutputConnection() {
-
+    fun connectReader(channelName: String) {
+        chatReader.connect(channelName)
     }
 
 }
