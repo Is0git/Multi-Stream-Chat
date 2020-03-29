@@ -37,24 +37,29 @@ class MainActivity : AppCompatActivity() {
                 }
             })
             .addEmoteStateListener(object : EmoteStateListener<Int, TwitchEmotesManager.TwitchEmote> {
-                override fun onDownloaded(emote: Map<Int, TwitchEmotesManager.TwitchEmote>) {
-                   lifecycleScope.launch(Dispatchers.Main) {
-                       emoteAdapter.twitchEmotesList = emote.toList().map { it.second }
-                       binding.progressBar.visibility = View.INVISIBLE
-                   }
-                }
-
-                override fun onStartLoading() {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
-
-                override fun onDownloading() {
+                override fun onStartFetch() {
 
                 }
 
-                override fun onFailed(e: Throwable) {
+                override fun onEmotesFetched() {
 
                 }
+
+                override fun onDownload() {
+
+                }
+
+                override fun onFailed(throwable: Throwable?) {
+
+                }
+
+                override fun onComplete(emoteSet: List<TwitchEmotesManager.TwitchEmote>) {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        emoteAdapter.twitchEmotesList = emoteSet
+                        binding.progressBar.visibility = View.INVISIBLE
+                    }
+                }
+
 
             })
             .build(this)

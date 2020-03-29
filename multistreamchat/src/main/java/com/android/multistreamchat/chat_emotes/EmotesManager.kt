@@ -3,12 +3,11 @@ package com.android.multistreamchat.chat_emotes
 import android.text.Spannable
 import kotlinx.coroutines.Job
 
-abstract class EmotesManager<K, E : EmotesManager.Emote>(var emoteStateListenerList: List<EmoteStateListener<K, E>>? = null) {
+abstract class EmotesManager<K, T : EmotesManager.Emote>(var emoteStateListenerList: List<EmoteStateListener<K, T>>? = null) {
 
-    var globalEmotes: MutableMap<K, E> = mutableMapOf()
+    var globalEmotes: MutableMap<K, List<T>> = mutableMapOf()
 
     var emoteDownloaderJob: Job? = null
-
 
     abstract fun getGlobalEmotes()
 
@@ -19,7 +18,7 @@ abstract class EmotesManager<K, E : EmotesManager.Emote>(var emoteStateListenerL
         }
     }
 
-    abstract fun createsSpannable(message: String, emotesId: Array<K>?) : Spannable?
+    abstract fun createsSpannable(message: String, emotesId: Array<K>?)
 
     open class Emote(var code: String? = null)
 

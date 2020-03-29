@@ -1,15 +1,22 @@
 package com.android.multistreamchat.socket.chat_writer
 
 import com.android.multistreamchat.user.User
-import java.io.Reader
+import java.io.BufferedReader
+import java.io.BufferedWriter
+
 import java.io.Writer
 
 class TwitchChatWriter(host: String, port: Int, connectionWriterHelper: WriterReaderHelper) :
-    ChatWriter(host, port, connectionWriterHelper) {
+    ChatWriter(host, port) {
     override fun disconnect(writer: Writer?) {
     }
 
-    override fun onConnected(writer: Writer?, reader: Reader?, user: User, channelName: String) {
+    override fun onConnected(
+        writer: BufferedWriter?,
+        reader: BufferedReader?,
+        user: User,
+        channelName: String
+    ) {
         if (user.name != null && user.token != null) {
             writer?.apply {
                 write("PASS oauth:${user.token}\n")
@@ -20,7 +27,6 @@ class TwitchChatWriter(host: String, port: Int, connectionWriterHelper: WriterRe
             onFailed("NEED TOKEN OR USERNAME")
         }
     }
-
 
     override fun onFailed(message: String) {
     }

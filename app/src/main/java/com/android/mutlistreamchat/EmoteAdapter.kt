@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.multistreamchat.chat_emotes.TwitchEmotesManager
 import com.android.mutlistreamchat.databinding.EmoteItemLayoutBinding
+import com.bumptech.glide.Glide
 
 class EmoteAdapter : RecyclerView.Adapter<EmoteAdapter.MyViewHolder>() {
 
@@ -28,6 +29,6 @@ class EmoteAdapter : RecyclerView.Adapter<EmoteAdapter.MyViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-       holder.emoteItemLayoutBinding.image.setImageDrawable(twitchEmotesList?.get(position)?.imageDrawable)
+        Glide.with(holder.emoteItemLayoutBinding.image).load(twitchEmotesList!![position].imageUrl).into(holder.emoteItemLayoutBinding.image)
     }
 }

@@ -30,10 +30,5 @@ abstract class ChatReader(host: String, port: Int) : ChatConnector(host, port) {
         chatOutputHandler.handleUserMessage(channel, message)
     }
 
-    abstract fun onConnected(
-        writer: BufferedWriter?,
-        reader: BufferedReader?,
-        user: User,
-        channelName: String
-    )
+
 }

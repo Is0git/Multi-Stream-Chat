@@ -1,6 +1,7 @@
 package com.android.multistreamchat
 
 import android.content.Context
+import android.content.res.Resources
 import com.android.multistreamchat.chat_emotes.EmoteStateListener
 import com.android.multistreamchat.chat_emotes.EmotesManager
 import com.android.multistreamchat.chat_emotes.TwitchEmotesManager
@@ -45,8 +46,8 @@ class Chat private constructor(val host: String, val port: Int, var username: St
         chatManager?.writeMessage(message)
     }
 
-    fun getEmoteById(id: Int): TwitchEmotesManager.TwitchEmote {
-        return (chatManager?.emoteManager as TwitchEmotesManager).globalEmotes[id]!!
+    fun getEmoteById(id: Int, set: String): TwitchEmotesManager.TwitchEmote {
+        return (chatManager?.emoteManager as TwitchEmotesManager).globalEmotes[set]?.find{it.id == id} ?: throw NoSuchElementException("EMOTE WITH THIS ID WAS NOT FOUND")
     }
 
     override fun onConnected() {
@@ -146,7 +147,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
             chat.apply {
                 dataListener = this@Builder.dataListener
-                emoteManager = this@Builder.emoteManager ?: TwitchEmotesManager(context, this@Builder.emoteStateListeners as List<EmoteStateListener<Int, TwitchEmotesManager.TwitchEmote>>)
+                emoteManager = this@Builder.emoteManager ?: TwitchEmotesManager(context, this@Builder.emoteStateListeners as List<EmoteStateListener<String, TwitchEmotesManager.TwitchEmote>>)
                 chatManager = this@Builder.chatManager
                 channelName = this@Builder.channelName
                 if (autoConnect && channelName != null) connect(

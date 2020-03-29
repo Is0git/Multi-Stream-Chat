@@ -28,14 +28,14 @@ open class TwitchChatParser : ChatParser() {
         return resultMap
     }
 
-    override fun extractEmoteIds(emotesRaw: String?): Array<Int>? {
-        var array: Array<Int>?
+    override fun extractEmoteIds(emotesRaw: String?): Array<String>? {
+        var array: Array<String>?
         if (emotesRaw.isNullOrEmpty()) return null
         emotesIdsRegex.findAll(emotesRaw).also {
             if (it.count() == 0) return  null
-            array = Array(it.count()) {0}
+            array = Array(it.count()) {""}
             it.forEachIndexed { index: Int, matchResult: MatchResult  ->
-                array!![index] = matchResult.value.dropLast(1).toInt()
+                array!![index] = matchResult.value.dropLast(1)
             }
         }
         return array

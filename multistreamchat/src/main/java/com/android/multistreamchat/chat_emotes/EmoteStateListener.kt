@@ -9,5 +9,5 @@ interface EmoteStateListener<K, T : EmotesManager.Emote> {
 
     fun onFailed(throwable: Throwable?)
 
-    fun onComplete(globalEmotes: MutableMap<K, T>)
+    fun onComplete(emoteSet: List<T>)
 }

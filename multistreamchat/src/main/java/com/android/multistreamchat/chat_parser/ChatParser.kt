@@ -7,7 +7,7 @@ abstract class ChatParser {
 
     abstract fun parseUserMessage(message: String): Map<String, String>
 
-    abstract fun extractEmoteIds(emotesRaw: String?) : Array<Int>?
+    abstract fun extractEmoteIds(emotesRaw: String?) : Array<String>?
 
     abstract fun unknownMessage(message: String)
 
