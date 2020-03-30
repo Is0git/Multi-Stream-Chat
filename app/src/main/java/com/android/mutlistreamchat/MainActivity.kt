@@ -4,16 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.lifecycleScope
-import com.android.multistreamchat.Chat
-import com.android.multistreamchat.chat_parser.ChatParser
-import com.android.multistreamchat.DataListener
-import com.android.multistreamchat.chat_emotes.EmoteStateListener
-import com.android.multistreamchat.chat_emotes.TwitchEmotesManager
-import com.android.multistreamchat.chat_parser.TwitchChatParser
+import com.android.multistreamchat.chat.Chat
+import com.android.multistreamchat.chat.chat_parser.ChatParser
+import com.android.multistreamchat.chat.listeners.DataListener
+import com.android.multistreamchat.chat.listeners.EmoteStateListener
+import com.android.multistreamchat.chat.chat_emotes.TwitchEmotesManager
+import com.android.multistreamchat.chat.chat_parser.TwitchChatParser
 import com.android.mutlistreamchat.databinding.ActivityMainBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,12 +28,14 @@ class MainActivity : AppCompatActivity() {
             .setUserToken("7uyg0kooxcagt096sig5f2i023mrdk")
             .setUsername("is0xxx")
             .setChatParser(TwitchChatParser::class.java)
-            .addDataListener(object : DataListener {
+            .addDataListener(object :
+                DataListener {
                 override fun onReceive(message: ChatParser.Message) {
                     chatAdapter.addLine(message)
                 }
             })
-            .addEmoteStateListener(object : EmoteStateListener<Int, TwitchEmotesManager.TwitchEmote> {
+            .addEmoteStateListener(object :
+                EmoteStateListener<Int, TwitchEmotesManager.TwitchEmote> {
                 override fun onStartFetch() {
 
                 }
@@ -54,13 +53,9 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onComplete(emoteSet: List<TwitchEmotesManager.TwitchEmote>) {
-                    lifecycleScope.launch(Dispatchers.Main) {
                         emoteAdapter.twitchEmotesList = emoteSet
                         binding.progressBar.visibility = View.INVISIBLE
-                    }
                 }
-
-
             })
             .build(this)
 

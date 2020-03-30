@@ -3,7 +3,7 @@ package com.android.mutlistreamchat
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.android.multistreamchat.chat_parser.ChatParser
+import com.android.multistreamchat.chat.chat_parser.ChatParser
 import com.android.mutlistreamchat.databinding.ChatLayoutBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
