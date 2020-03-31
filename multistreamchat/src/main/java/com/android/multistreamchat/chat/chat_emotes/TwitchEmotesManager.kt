@@ -52,7 +52,6 @@ class TwitchEmotesManager(
                         it.onDownload()
                     }
                     response.body()?.emoticon_sets?.forEach { set ->
-                        //                            val drawable = Glide.with(context).load(url).submit().get()
                         send(set)
                     }
 
@@ -94,7 +93,7 @@ class TwitchEmotesManager(
                             )
                         }
                         break
-                    } else if (i == emotes.count() - 1) spannable.append(word)
+                    } else if (i == emotes.count() - 1) spannable.append("$word ")
                 }
             }
         }

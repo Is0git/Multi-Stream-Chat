@@ -1,9 +1,11 @@
 package com.android.multistreamchat.chat.socket.chat_writer
 
+import android.util.Log
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
+import java.lang.Exception
 import java.net.Socket
 
 open class WriterReaderHelper {
@@ -12,9 +14,13 @@ open class WriterReaderHelper {
     var reader: BufferedReader? = null
 
     fun writeToIrcChat(message: String, channelName: String) {
-        writer?.let {
-            it.write("PRIVMSG #$channelName :$message\n")
-            it.flush()
+        try {
+            writer?.let {
+                it.write("PRIVMSG #$channelName :$message\n")
+                it.flush()
+            }
+        } catch (exception: Exception) {
+            Log.d("WRITERHELPER", exception.message)
         }
     }
 

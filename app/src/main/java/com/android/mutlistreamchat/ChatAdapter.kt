@@ -1,5 +1,6 @@
 package com.android.mutlistreamchat
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +34,10 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.MyViewHolder>() {
     @ExperimentalCoroutinesApi
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
-
+        holder.binding.user.apply {
+           text = linesList[position].username
+            setTextColor(Color.parseColor(linesList[position].usernameColor))
+        }
         holder.binding.text.text = if (linesList[position].spannnableMessage.isNullOrEmpty()) linesList[position].message else linesList[position].spannnableMessage
 
 

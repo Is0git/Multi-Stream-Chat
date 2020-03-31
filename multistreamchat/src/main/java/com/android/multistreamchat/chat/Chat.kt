@@ -179,7 +179,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
                 )
             }
 
-            val user: User = User(chat.username, null, chat.token)
+            val user = User(chat.username, null, chat.token)
 
             val emotesManager = this.emotesManager ?: TwitchEmotesManager(context,  this.emoteStateListeners as List<EmoteStateListener<String, TwitchEmotesManager.TwitchEmote>>)
 
@@ -191,7 +191,12 @@ class Chat private constructor(val host: String, val port: Int, var username: St
             val chatReader = this.chatReader ?: TwitchChatReader(chat.host, chat.port, user, outputHandler)
             chatReader.dataListeners = this.dataListeners
 
-            val chatWriter = this.chatWriter ?: TwitchChatWriter(chat.host, chat.port, user, chat.channelName!!, inputHandler)
+            val chatWriter = this.chatWriter ?: TwitchChatWriter(
+                chat.host,
+                chat.port,
+                user,
+                inputHandler
+            )
             val chatManager = this.chatManager ?: ChatManager(
                 emotesManager,
                 chatReader,
