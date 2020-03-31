@@ -69,8 +69,8 @@ class TwitchEmotesManager(
     }
 
     override suspend fun getEmote(id: Int): TwitchEmote {
-        return emoteService.getEmote(id).let { response ->
-            if (response.isSuccessful && response.body() != null) response.body()!! else throw CancellationException(
+        return emoteService.getEmote(id = id).let { response ->
+            if (response.isSuccessful && response.body() != null) response.body()!!.first() else throw CancellationException(
                 "couldn't get an emote: ${response.message()}"
             )
         }
@@ -81,7 +81,7 @@ class TwitchEmotesManager(
         val spannable = SpannableStringBuilder()
         message.splitToSequence(" ").also {
             it.forEach { word ->
-                for (i in emotes?.indices!!) {
+                for (i in emotes.indices) {
                     if (emotes[i]?.code == word) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             spannable.append(

@@ -11,7 +11,7 @@ abstract class ChatReader(host: String, port: Int, user: User?) : ChatConnector(
 
     lateinit var chatOutputHandler: ChatOutputHandler
 
-    val dataListeners: MutableList<DataListener> by lazy { mutableListOf<DataListener>() }
+    var dataListeners: MutableList<DataListener>? = null
 
     constructor(host: String, port: Int, user: User?, chatOutputHandler: ChatOutputHandler) : this(host, port, user) {
         this.chatOutputHandler = chatOutputHandler

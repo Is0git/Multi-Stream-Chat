@@ -23,10 +23,9 @@ abstract class ChatConnector(var host: String, var port: Int) {
     }
 
     open fun connect(channelName: String) {
-        this.socket = Socket(host, port).also {
-            isConnected = true
-            initStream(channelName)
-        }
+        this.socket = Socket(host, port)
+        isConnected = true
+        initStream(channelName)
     }
 
     fun clear() {

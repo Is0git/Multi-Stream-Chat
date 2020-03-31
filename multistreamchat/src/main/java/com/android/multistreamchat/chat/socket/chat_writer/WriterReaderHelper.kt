@@ -11,9 +11,9 @@ open class WriterReaderHelper {
 
     var reader: BufferedReader? = null
 
-    fun writeToIrcChat(message: String) {
+    fun writeToIrcChat(message: String, channelName: String) {
         writer?.let {
-            it.write(message)
+            it.write("PRIVMSG #$channelName :$message\n")
             it.flush()
         }
     }

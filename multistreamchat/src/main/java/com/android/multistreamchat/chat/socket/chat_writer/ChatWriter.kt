@@ -4,9 +4,9 @@ import com.android.multistreamchat.chat.input_handler.ChatInputHandler
 import com.android.multistreamchat.chat.socket.ChatConnector
 import com.android.multistreamchat.chat.user.User
 
-abstract class ChatWriter(host: String, port: Int, user: User) : ChatConnector(host, port) {
+abstract class ChatWriter(host: String, port: Int, user: User, var channelName: String) : ChatConnector(host, port) {
     lateinit var chatInputHandler: ChatInputHandler
-    constructor(host: String, port: Int,  user: User, chatInputHandler: ChatInputHandler) : this(host, port, user) {
+    constructor(host: String, port: Int,  user: User, channelName: String, chatInputHandler: ChatInputHandler) : this(host, port, user, channelName) {
         this.chatInputHandler = chatInputHandler
     }
 
@@ -18,6 +18,6 @@ abstract class ChatWriter(host: String, port: Int, user: User) : ChatConnector(h
     }
 
     fun writeMessage(message: String) {
-        writerReaderHelper.writeToIrcChat(message)
+        writerReaderHelper.writeToIrcChat(message,  channelName)
     }
 }

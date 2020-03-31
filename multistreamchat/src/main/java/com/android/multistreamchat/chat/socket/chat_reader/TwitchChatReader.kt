@@ -49,7 +49,7 @@ class TwitchChatReader(host: String, port: Int, user: User?, outputHandler: Chat
 
                 for (message in channel) {
                     withContext(Dispatchers.Main) {
-                        dataListeners.forEach {
+                        dataListeners?.forEach {
                             it.onReceive(message)
                         }
                     }

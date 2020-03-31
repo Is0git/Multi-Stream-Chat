@@ -12,9 +12,12 @@ class ChatManager(var emoteManager: EmotesManager<*, *>, var chatReader: ChatRea
 
     var writerJob: Job? = null
     var readerJob: Job? = null
+    var writeMessageJob: Job? = null
 
     fun writeMessage(message: String) {
-        chatWriter.writeMessage(message)
+       writeMessageJob = CoroutineScope(Dispatchers.Default).launch {
+           chatWriter.writeMessage(message)
+       }
     }
 
     fun connectWriter(channelName: String) {
@@ -33,5 +36,6 @@ class ChatManager(var emoteManager: EmotesManager<*, *>, var chatReader: ChatRea
     fun clear() {
         writerJob?.cancel().also { writerJob = null }
         readerJob?.cancel().also { readerJob = null }
+        writeMessageJob?.cancel().also { writeMessageJob = null }
     }
 }

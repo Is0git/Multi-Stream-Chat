@@ -6,5 +6,5 @@ import kotlinx.coroutines.channels.Channel
 
 abstract class ChatOutputHandler(var chatParser: ChatParser, var emotesManager: EmotesManager<*, *>)  {
 
-    abstract suspend fun handleUserMessage(channel: Channel<ChatParser.Message>, message: String)
+    abstract suspend fun handleUserMessage(channel: Channel<ChatParser.Message>, rawMessage: String)
 }

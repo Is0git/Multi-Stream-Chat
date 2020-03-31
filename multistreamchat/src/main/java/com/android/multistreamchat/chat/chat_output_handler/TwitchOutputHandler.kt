@@ -7,9 +7,9 @@ import kotlinx.coroutines.channels.Channel
 
 class TwitchOutputHandler(chatParser: ChatParser, emotesManager: EmotesManager<*,*>) : ChatOutputHandler(chatParser, emotesManager) {
 
-    override suspend fun handleUserMessage(channel: Channel<ChatParser.Message>, message: String) {
+    override suspend fun handleUserMessage(channel: Channel<ChatParser.Message>, rawMessage: String) {
 
-        chatParser.parseUserMessage(message).also { parsedIrcMessage ->
+        chatParser.parseUserMessage(rawMessage).also { parsedIrcMessage ->
 
             val extractedEmoteIds = emotesManager.extractEmoteIds(parsedIrcMessage["emotes"])
 
@@ -18,7 +18,7 @@ class TwitchOutputHandler(chatParser: ChatParser, emotesManager: EmotesManager<*
                 parsedIrcMessage["message"]!!,
                 parsedIrcMessage["display-name"]!!,
                 parsedIrcMessage["color"] ?: "#000000",
-                extractedEmoteIds.let { (emotesManager as TwitchEmotesManager).createEmoteSpannable(parsedIrcMessage["message"]!!, (emotesManager as TwitchEmotesManager).getMessageEmoteCodes(extractedEmoteIds!!)) }
+                extractedEmoteIds?.let { (emotesManager as TwitchEmotesManager).createEmoteSpannable(parsedIrcMessage["message"]!!, (emotesManager as TwitchEmotesManager).getMessageEmoteCodes(extractedEmoteIds!!)) }
             )
             channel.send(msg)
         }

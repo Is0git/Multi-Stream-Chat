@@ -15,7 +15,7 @@ interface EmotesService {
     suspend fun getGlobalEmotes(@Query("emotesets") vararg emoteSets: Int) : Response<GlobalEmote>
 
     @GET
-    suspend fun getEmote(@Query("id") id: Int, @Url url: String = "https://api.twitchemotes.com/api/v4/emotes") : Response<TwitchEmotesManager.TwitchEmote>
+    suspend fun getEmote(@Url url: String = "https://api.twitchemotes.com/api/v4/emotes", @Query("id") id: Int) : Response<List<TwitchEmotesManager.TwitchEmote>>
 
 //    @GET
 //    suspend fun getEmoteResource(@Url url: String, @Path(""))
