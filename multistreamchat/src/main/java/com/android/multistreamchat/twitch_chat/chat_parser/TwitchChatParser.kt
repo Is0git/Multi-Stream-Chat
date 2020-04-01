@@ -1,4 +1,6 @@
-package com.android.multistreamchat.chat.chat_parser
+package com.android.multistreamchat.twitch_chat.chat_parser
+
+import com.android.multistreamchat.chat.chat_parser.ChatParser
 
 open class TwitchChatParser : ChatParser() {
     //    """/w+=w*;"""
@@ -12,7 +14,7 @@ open class TwitchChatParser : ChatParser() {
 
 
     override fun parseUserMessage(message: String): Map<String, String> {
-      val resultMap = userMessageRegex.findAll(message, 1).toMap {
+        val resultMap = userMessageRegex.findAll(message, 1).toMap {
             var equalsPosition = 0
             for (a in 0 until it.count()) {
                 if (it[a] == '=') {
@@ -27,6 +29,13 @@ open class TwitchChatParser : ChatParser() {
         return resultMap
     }
 
+    override fun parseBadgesFromMessage(rawMessage: String?): List<String>? {
+       return rawMessage?.split(',')?.toMutableList()?.apply {
+           for(i in this.indices) {
+               this[i] = this[i].dropLast(2)
+           }
+       }
+    }
 
 
     override fun unknownMessage(message: String) {

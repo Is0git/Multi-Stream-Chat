@@ -1,4 +1,4 @@
-package com.android.multistreamchat
+package com.android.multistreamchat.chat
 
 import com.android.multistreamchat.chat.chat_emotes.EmotesManager
 import com.android.multistreamchat.chat.socket.chat_reader.ChatReader

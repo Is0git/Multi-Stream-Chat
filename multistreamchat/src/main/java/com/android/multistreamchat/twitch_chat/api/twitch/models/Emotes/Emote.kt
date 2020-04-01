@@ -1,4 +1,4 @@
-package com.android.multistreamchat.chat.api.twitch.models.Emotes
+package com.android.multistreamchat.twitch_chat.api.twitch.models.Emotes
 
 import com.squareup.moshi.Json
 

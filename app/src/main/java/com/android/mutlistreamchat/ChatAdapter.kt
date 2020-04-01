@@ -38,7 +38,7 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.MyViewHolder>() {
            text = linesList[position].username
             setTextColor(Color.parseColor(linesList[position].usernameColor))
         }
-        holder.binding.text.text = if (linesList[position].spannnableMessage.isNullOrEmpty()) linesList[position].message else linesList[position].spannnableMessage
+        holder.binding.text.text = if (linesList[position].spannableMessage.isNullOrEmpty()) linesList[position].message else linesList[position].spannableMessage
 
 
 //        holder.binding.text.setTextColor(Color.parseColor(linesList[position].usernameColor))
