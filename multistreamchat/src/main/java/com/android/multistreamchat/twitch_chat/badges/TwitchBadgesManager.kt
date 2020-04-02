@@ -8,7 +8,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class TwitchBadgesManager() : BadgesManager<BadgeItem>() {
+class TwitchBadgesManager : BadgesManager<BadgeItem>() {
     private var badgeService: BadgeService = RetrofitInstance.getRetrofit("https://api.twitch.tv").create(BadgeService::class.java)
     override suspend fun fetchBadges(channelName: String): Map<String, BadgeItem>{
         return withContext(Dispatchers.IO) {
@@ -16,7 +16,7 @@ class TwitchBadgesManager() : BadgesManager<BadgeItem>() {
             val id = result.body()?.users?.first()?._id ?: throw CancellationException("no channel id provided")
             badgeService.getChannelBadges(id.toInt()).run {
                 when {
-                    isSuccessful && body()?.badges != null-> body()?.badges!!
+                    isSuccessful && body() != null-> body()!!
                     else -> throw CancellationException(errorBody()?.string())
                 }
             }
