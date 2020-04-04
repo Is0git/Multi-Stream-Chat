@@ -6,7 +6,7 @@ import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.Writer
 
-class TwitchChatWriter(host: String, port: Int, user: User, channelName: String, inputHandler: ChatInputHandler) :
+class TwitchChatWriter(host: String, port: Int, user: User, channelName: String?, inputHandler: ChatInputHandler) :
     ChatWriter(host, port, user, channelName, inputHandler) {
     override fun disconnect(writer: Writer?) {
     }

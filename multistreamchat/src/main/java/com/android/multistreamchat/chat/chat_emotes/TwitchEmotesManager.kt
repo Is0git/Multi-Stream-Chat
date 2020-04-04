@@ -70,7 +70,7 @@ class TwitchEmotesManager(
 
     override suspend fun getEmote(id: Int): TwitchEmote {
         return emoteService.getEmote(id = id).let { response ->
-            if (response.isSuccessful && response.body() != null) response.body()!!.first() else throw CancellationException(
+            if (response.isSuccessful && !response.body().isNullOrEmpty()) response.body()?.first()!! else throw CancellationException(
                 "couldn't get an emote: ${response.message()}"
             )
         }
