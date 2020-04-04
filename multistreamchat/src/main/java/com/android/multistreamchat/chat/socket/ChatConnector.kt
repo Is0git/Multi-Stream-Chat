@@ -18,11 +18,14 @@ abstract class ChatConnector(var host: String, var port: Int) {
 
     var user: User? = null
 
+    var channelName: String? = null
+
     constructor(host: String, port: Int, user: User?) : this(host, port) {
         this.user = user
     }
 
     open fun connect(channelName: String) {
+        this.channelName = channelName
         this.socket = Socket(host, port)
         isConnected = true
         initStream(channelName)

@@ -1,7 +1,7 @@
-package com.android.multistreamchat.chat.api
+package com.android.multistreamchat.twitch_chat.api
 
-import com.android.multistreamchat.chat.api.twitch.GlobalEmoteAdapter
-import com.android.multistreamchat.chat.api.twitch.SingleEmoteAdapter
+import com.android.multistreamchat.twitch_chat.api.twitch.GlobalEmoteAdapter
+import com.android.multistreamchat.twitch_chat.api.twitch.SingleEmoteAdapter
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

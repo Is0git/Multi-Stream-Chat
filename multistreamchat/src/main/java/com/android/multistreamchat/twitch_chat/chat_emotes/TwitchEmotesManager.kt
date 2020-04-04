@@ -1,4 +1,4 @@
-package com.android.multistreamchat.chat.chat_emotes
+package com.android.multistreamchat.twitch_chat.chat_emotes
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -7,8 +7,9 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
 import androidx.core.graphics.drawable.toBitmap
-import com.android.multistreamchat.chat.api.RetrofitInstance
-import com.android.multistreamchat.chat.api.twitch.services.EmotesService
+import com.android.multistreamchat.twitch_chat.api.RetrofitInstance
+import com.android.multistreamchat.twitch_chat.api.twitch.services.EmotesService
+import com.android.multistreamchat.chat.chat_emotes.EmotesManager
 import com.android.multistreamchat.chat.listeners.EmoteStateListener
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.*
@@ -52,7 +53,6 @@ class TwitchEmotesManager(
                         it.onDownload()
                     }
                     response.body()?.emoticon_sets?.forEach { set ->
-                        //                            val drawable = Glide.with(context).load(url).submit().get()
                         send(set)
                     }
 
@@ -94,7 +94,7 @@ class TwitchEmotesManager(
                             )
                         }
                         break
-                    } else if (i == emotes.count() - 1) spannable.append(word)
+                    } else if (i == emotes.count() - 1) spannable.append("$word ")
                 }
             }
         }

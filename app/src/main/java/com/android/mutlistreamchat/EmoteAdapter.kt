@@ -3,7 +3,7 @@ package com.android.mutlistreamchat
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.android.multistreamchat.chat.chat_emotes.TwitchEmotesManager
+import com.android.multistreamchat.twitch_chat.chat_emotes.TwitchEmotesManager
 import com.android.mutlistreamchat.databinding.EmoteItemLayoutBinding
 import com.bumptech.glide.Glide
 

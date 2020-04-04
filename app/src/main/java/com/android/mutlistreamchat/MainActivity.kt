@@ -8,8 +8,8 @@ import com.android.multistreamchat.chat.Chat
 import com.android.multistreamchat.chat.chat_parser.ChatParser
 import com.android.multistreamchat.chat.listeners.DataListener
 import com.android.multistreamchat.chat.listeners.EmoteStateListener
-import com.android.multistreamchat.chat.chat_emotes.TwitchEmotesManager
-import com.android.multistreamchat.chat.chat_parser.TwitchChatParser
+import com.android.multistreamchat.twitch_chat.chat_emotes.TwitchEmotesManager
+import com.android.multistreamchat.twitch_chat.chat_parser.TwitchChatParser
 import com.android.mutlistreamchat.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         emoteAdapter = EmoteAdapter()
         binding.emotesList.adapter = emoteAdapter
         val chat = Chat.Builder()
-            .autoConnect("is0xxx")
+            .autoConnect("greekgodx")
             .setClient(Chat.HOST, Chat.PORT)
             .setUserToken("7uyg0kooxcagt096sig5f2i023mrdk")
             .setUsername("is0xxx")
