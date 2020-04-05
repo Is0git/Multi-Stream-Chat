@@ -13,6 +13,7 @@ class TwitchBadgesManager : BadgesManager<BadgeItem>() {
     override suspend fun fetchBadges(channelName: String): Map<String, BadgeItem>{
         return withContext(Dispatchers.IO) {
             val result =  badgeService.getChannel(channelName)
+            if (result.body()?.users.isNullOrEmpty()) throw CancellationException("no users")
             val id = result.body()?.users?.first()?._id ?: throw CancellationException("no channel id provided")
             badgeService.getChannelBadges(id.toInt()).run {
                 when {
