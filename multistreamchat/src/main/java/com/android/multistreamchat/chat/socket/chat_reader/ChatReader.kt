@@ -13,8 +13,9 @@ abstract class ChatReader(host: String, port: Int, user: User?) : ChatConnector(
 
     var dataListeners: MutableList<DataListener>? = null
 
-    constructor(host: String, port: Int, user: User?, chatOutputHandler: ChatOutputHandler) : this(host, port, user) {
+    constructor(host: String, port: Int, user: User?, chatOutputHandler: ChatOutputHandler, channelName: String?) : this(host, port, user) {
         this.chatOutputHandler = chatOutputHandler
+        channelName?.let { chatOutputHandler?.badgesManager.getAllBadges(it) }
     }
 
     override fun initStream(channelName: String) {

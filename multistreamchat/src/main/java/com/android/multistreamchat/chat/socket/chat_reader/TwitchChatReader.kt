@@ -13,7 +13,7 @@ import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.Writer
 
-class TwitchChatReader(host: String, port: Int, user: User?, outputHandler: ChatOutputHandler) : ChatReader(host, port, user, outputHandler) {
+class TwitchChatReader(host: String, port: Int, user: User?, outputHandler: ChatOutputHandler, channelName: String?) : ChatReader(host, port, user, outputHandler, channelName) {
     override fun disconnect(writer: Writer?) {
 
     }

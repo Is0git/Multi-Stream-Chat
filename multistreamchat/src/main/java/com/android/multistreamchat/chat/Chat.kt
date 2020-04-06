@@ -202,7 +202,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
             val inputHandler = this.inputHandler ?: TwitchInputHandler(user, chat.host, chat.port)
             val outputHandler = this.outputHandler ?: TwitchOutputHandler(chatParser, emotesManager, badgesManager)
 
-            val chatReader = this.chatReader ?: TwitchChatReader(chat.host, chat.port, user, outputHandler)
+            val chatReader = this.chatReader ?: TwitchChatReader(chat.host, chat.port, user, outputHandler, channelName)
             chatReader.dataListeners = this.dataListeners
 
             val chatWriter = this.chatWriter ?: TwitchChatWriter(chat.host, chat.port, user, chat.channelName, inputHandler)

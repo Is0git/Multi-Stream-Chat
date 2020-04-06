@@ -11,14 +11,14 @@ abstract class BadgesManager<T> {
     abstract suspend fun fetchBadges(channelName: String): Map<String, T>
 
      fun getAllBadges(channelName: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        allBadgesFetchJob =  CoroutineScope(Dispatchers.IO).launch {
             fetchBadges(channelName).also { channelBadges = it }
         }
     }
 
     fun getMessageBadges(badgesCodes: List<String>?): List<String>? {
         val badges: MutableList<String>
-        if (badgesCodes.isNullOrEmpty() && allBadgesFetchJob != null && allBadgesFetchJob?.isCompleted!!) throw CancellationException("message has no badges")
+        if (badgesCodes.isNullOrEmpty() && allBadgesFetchJob == null && !allBadgesFetchJob?.isCompleted!!) throw CancellationException("message has no badges")
         else {
             badges = mutableListOf()
             badgesCodes?.forEach {

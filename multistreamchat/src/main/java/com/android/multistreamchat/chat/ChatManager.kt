@@ -3,10 +3,7 @@ package com.android.multistreamchat.chat
 import com.android.multistreamchat.chat.chat_emotes.EmotesManager
 import com.android.multistreamchat.chat.socket.chat_reader.ChatReader
 import com.android.multistreamchat.chat.socket.chat_writer.ChatWriter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class
 ChatManager(var emoteManager: EmotesManager<*, *>, var chatReader: ChatReader, var chatWriter: ChatWriter) {
