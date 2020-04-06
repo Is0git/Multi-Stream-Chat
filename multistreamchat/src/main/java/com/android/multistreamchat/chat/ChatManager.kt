@@ -8,7 +8,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ChatManager(var emoteManager: EmotesManager<*, *>, var chatReader: ChatReader, var chatWriter: ChatWriter) {
+class
+ChatManager(var emoteManager: EmotesManager<*, *>, var chatReader: ChatReader, var chatWriter: ChatWriter) {
 
     var writerJob: Job? = null
     var readerJob: Job? = null

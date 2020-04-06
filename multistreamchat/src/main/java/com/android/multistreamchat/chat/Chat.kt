@@ -1,15 +1,16 @@
 package com.android.multistreamchat.chat
 
 import android.content.Context
+import com.android.multistreamchat.chat.badges.BadgesManager
 import com.android.multistreamchat.chat.listeners.EmoteStateListener
 import com.android.multistreamchat.chat.chat_emotes.EmotesManager
-import com.android.multistreamchat.chat.chat_emotes.TwitchEmotesManager
+import com.android.multistreamchat.chat.ChatManager
 import com.android.multistreamchat.chat.chat_output_handler.ChatOutputHandler
-import com.android.multistreamchat.chat.chat_output_handler.TwitchOutputHandler
+
 import com.android.multistreamchat.chat.chat_parser.ChatParser
-import com.android.multistreamchat.chat.chat_parser.TwitchChatParser
+
 import com.android.multistreamchat.chat.input_handler.ChatInputHandler
-import com.android.multistreamchat.chat.input_handler.TwitchInputHandler
+
 import com.android.multistreamchat.chat.socket.chat_reader.ChatReader
 import com.android.multistreamchat.chat.socket.chat_reader.TwitchChatReader
 import com.android.multistreamchat.chat.socket.chat_writer.ChatWriter
@@ -17,7 +18,12 @@ import com.android.multistreamchat.chat.socket.chat_writer.TwitchChatWriter
 import com.android.multistreamchat.chat.socket.chat_writer.WriterReaderHelper
 import com.android.multistreamchat.chat.user.User
 import com.android.multistreamchat.chat.listeners.DataListener
-import com.android.multistreamchat.ChatManager
+import com.android.multistreamchat.twitch_chat.badges.TwitchBadgesManager
+import com.android.multistreamchat.twitch_chat.chat_emotes.TwitchEmotesManager
+import com.android.multistreamchat.twitch_chat.chat_parser.TwitchChatParser
+import com.android.multistreamchat.twitch_chat.input_handler.TwitchInputHandler
+import com.android.multistreamchat.twitch_chat.output_handler.TwitchOutputHandler
+
 
 class Chat private constructor(val host: String, val port: Int, var username: String? = null) {
 
@@ -73,6 +79,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
         var chatParser: ChatParser? = null
         private var outputHandler: ChatOutputHandler? = null
         private var inputHandler: ChatInputHandler? = null
+        private var badgesManager: BadgesManager<*>? = null
 
         private val dataListeners: MutableList<DataListener> by lazy { mutableListOf<DataListener>() }
         private val emoteStateListeners by lazy { mutableListOf<EmoteStateListener<*, *>>() }
@@ -144,6 +151,11 @@ class Chat private constructor(val host: String, val port: Int, var username: St
             return this
         }
 
+        fun setBadgeManager(badgesManager: BadgesManager<*>) : Builder {
+            this.badgesManager = badgesManager
+            return this
+        }
+
         inline fun <reified T : ChatParser> setChatParser(parserClass: Class<T>): Builder {
             val parse = when {
                 parserClass.isAssignableFrom(TwitchChatParser::class.java) -> TwitchChatParser()
@@ -185,8 +197,10 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
             val chatParser = this.chatParser ?: TwitchChatParser()
 
+            val badgesManager = badgesManager ?: TwitchBadgesManager()
+
             val inputHandler = this.inputHandler ?: TwitchInputHandler(user, chat.host, chat.port)
-            val outputHandler = this.outputHandler ?: TwitchOutputHandler(chatParser, emotesManager)
+            val outputHandler = this.outputHandler ?: TwitchOutputHandler(chatParser, emotesManager, badgesManager)
 
             val chatReader = this.chatReader ?: TwitchChatReader(chat.host, chat.port, user, outputHandler)
             chatReader.dataListeners = this.dataListeners

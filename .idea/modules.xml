@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Multi-Stream-Chat.iml" filepath="$PROJECT_DIR$/.idea/Multi-Stream-Chat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MutliStreamChat.iml" filepath="$PROJECT_DIR$/MutliStreamChat.iml" group="MutliStreamChat" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="MutliStreamChat/app" />
+      <module fileurl="file://$PROJECT_DIR$/multistreamchat/multistreamchat.iml" filepath="$PROJECT_DIR$/multistreamchat/multistreamchat.iml" group="MutliStreamChat/multistreamchat" />
+    </modules>
+  </component>
+</project>
