@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         emoteAdapter = EmoteAdapter()
         binding.emotesList.adapter = emoteAdapter
         val chat = Chat.Builder()
-            .autoConnect("is0xxx")
+            .autoConnect("xqcow")
             .setClient(Chat.HOST, Chat.PORT)
             .setUserToken("7uyg0kooxcagt096sig5f2i023mrdk")
             .setUsername("is0xxx")
