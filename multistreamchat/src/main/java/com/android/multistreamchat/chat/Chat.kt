@@ -191,7 +191,7 @@ class Chat private constructor(val host: String, val port: Int, var username: St
                 )
             }
 
-            val user: User = User(chat.username, null, chat.token)
+            val user = User(chat.username, null, chat.token)
 
             val emotesManager = this.emotesManager ?: TwitchEmotesManager(context,  this.emoteStateListeners as List<EmoteStateListener<String, TwitchEmotesManager.TwitchEmote>>)
 

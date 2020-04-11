@@ -4,7 +4,7 @@ import com.android.multistreamchat.chat.input_handler.ChatInputHandler
 import com.android.multistreamchat.chat.socket.ChatConnector
 import com.android.multistreamchat.chat.user.User
 
-abstract class ChatWriter(host: String, port: Int, user: User,  channelName: String?) : ChatConnector(host, port) {
+abstract class ChatWriter(host: String, port: Int, user: User,  channelName: String?) : ChatConnector(host, port, user) {
     lateinit var chatInputHandler: ChatInputHandler
     constructor(host: String, port: Int,  user: User, channelName: String?, chatInputHandler: ChatInputHandler) : this(host, port, user, channelName) {
         this.chatInputHandler = chatInputHandler
