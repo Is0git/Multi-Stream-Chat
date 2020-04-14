@@ -62,6 +62,10 @@ class Chat private constructor(val host: String, val port: Int, var username: St
         return (chatManager?.emoteManager as TwitchEmotesManager).globalEmotes[set]?.find{it.id == id} ?: throw NoSuchElementException("EMOTE WITH THIS ID WAS NOT FOUND")
     }
 
+    fun getAllEmotes() : MutableMap<out Any?, out List<EmotesManager.Emote>>? {
+        return chatManager?.getGlobalEmotes()
+    }
+
     class Builder {
         private var host: String? = null
         private var port: Int? = null

@@ -30,6 +30,9 @@ ChatManager(var emoteManager: EmotesManager<*, *>, var chatReader: ChatReader, v
         }
     }
 
+    fun getGlobalEmotes():MutableMap<out Any?, out List<EmotesManager.Emote>>  {
+        return emoteManager.globalEmotes
+    }
 
     fun clear() {
         writerJob?.cancel().also { writerJob = null }
