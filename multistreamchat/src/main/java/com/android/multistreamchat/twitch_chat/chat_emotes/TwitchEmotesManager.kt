@@ -101,15 +101,10 @@ class TwitchEmotesManager(
         return spannable
     }
 
-    class TwitchEmote(
-        val id: Int?,
-        val imageUrl: String? = null
-    ) : Emote() {
-        constructor(id: Int, imageUrl: String, code: String?) : this(
-            id,
-            imageUrl
-        ) {
+    class TwitchEmote(val id: Int?) : Emote() {
+        constructor(id: Int, imageUrl: String, code: String?) : this(id) {
             this.code = code
+            this.imageUrl = imageUrl
         }
     }
 

@@ -32,7 +32,7 @@ abstract class EmotesManager<K, T : EmotesManager.Emote>(var emoteStateListenerL
 
     abstract suspend fun createEmoteSpannable(message: String, emotes: Array<T?>) : Spannable
 
-    open class Emote(var code: String? = null)
+    open class Emote(var code: String? = null,  var imageUrl: String? = null)
 
     fun cancelJob() {
         emotesDownloadJob?.cancel().also { emotesDownloadJob = null }
