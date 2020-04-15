@@ -2,22 +2,18 @@ package com.android.multistreamchat.chat
 
 import android.content.Context
 import com.android.multistreamchat.chat.badges.BadgesManager
-import com.android.multistreamchat.chat.listeners.EmoteStateListener
 import com.android.multistreamchat.chat.chat_emotes.EmotesManager
-import com.android.multistreamchat.chat.ChatManager
 import com.android.multistreamchat.chat.chat_output_handler.ChatOutputHandler
-
 import com.android.multistreamchat.chat.chat_parser.ChatParser
-
 import com.android.multistreamchat.chat.input_handler.ChatInputHandler
-
+import com.android.multistreamchat.chat.listeners.DataListener
+import com.android.multistreamchat.chat.listeners.EmoteStateListener
 import com.android.multistreamchat.chat.socket.chat_reader.ChatReader
 import com.android.multistreamchat.chat.socket.chat_reader.TwitchChatReader
 import com.android.multistreamchat.chat.socket.chat_writer.ChatWriter
 import com.android.multistreamchat.chat.socket.chat_writer.TwitchChatWriter
 import com.android.multistreamchat.chat.socket.chat_writer.WriterReaderHelper
 import com.android.multistreamchat.chat.user.User
-import com.android.multistreamchat.chat.listeners.DataListener
 import com.android.multistreamchat.twitch_chat.badges.TwitchBadgesManager
 import com.android.multistreamchat.twitch_chat.chat_emotes.TwitchEmotesManager
 import com.android.multistreamchat.twitch_chat.chat_parser.TwitchChatParser
@@ -64,6 +60,10 @@ class Chat private constructor(val host: String, val port: Int, var username: St
 
     fun getAllEmotes() : MutableMap<out Any?, out List<EmotesManager.Emote>>? {
         return chatManager?.getGlobalEmotes()
+    }
+
+    fun clear() {
+        chatManager?.clear()
     }
 
     class Builder {

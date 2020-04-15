@@ -3,7 +3,10 @@ package com.android.multistreamchat.twitch_chat.api.twitch.services
 import com.android.multistreamchat.twitch_chat.api.twitch.models.Emotes.GlobalEmote
 import com.android.multistreamchat.twitch_chat.chat_emotes.TwitchEmotesManager
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.Query
+import retrofit2.http.Url
 
 interface EmotesService {
 

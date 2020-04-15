@@ -1,8 +1,8 @@
 package com.android.multistreamchat.chat.socket.chat_reader
 
-import com.android.multistreamchat.chat.listeners.DataListener
 import com.android.multistreamchat.chat.chat_output_handler.ChatOutputHandler
 import com.android.multistreamchat.chat.chat_parser.ChatParser
+import com.android.multistreamchat.chat.listeners.DataListener
 import com.android.multistreamchat.chat.socket.ChatConnector
 import com.android.multistreamchat.chat.user.User
 import kotlinx.coroutines.channels.Channel
@@ -15,7 +15,7 @@ abstract class ChatReader(host: String, port: Int, user: User?) : ChatConnector(
 
     constructor(host: String, port: Int, user: User?, chatOutputHandler: ChatOutputHandler, channelName: String?) : this(host, port, user) {
         this.chatOutputHandler = chatOutputHandler
-        channelName?.let { chatOutputHandler?.badgesManager.getAllBadges(it) }
+        channelName?.let { chatOutputHandler.badgesManager.getAllBadges(it) }
     }
 
     override fun initStream(channelName: String) {
@@ -28,5 +28,10 @@ abstract class ChatReader(host: String, port: Int, user: User?) : ChatConnector(
         chatOutputHandler.handleUserMessage(channel, message)
     }
 
+    override fun clear() {
+        super.clear()
+        chatOutputHandler.clear()
+        dataListeners = null
+    }
 
 }

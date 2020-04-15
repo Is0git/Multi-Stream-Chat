@@ -2,9 +2,9 @@ package com.android.multistreamchat.twitch_chat.output_handler
 
 import com.android.multistreamchat.chat.badges.BadgesManager
 import com.android.multistreamchat.chat.chat_emotes.EmotesManager
-import com.android.multistreamchat.twitch_chat.chat_emotes.TwitchEmotesManager
 import com.android.multistreamchat.chat.chat_output_handler.ChatOutputHandler
 import com.android.multistreamchat.chat.chat_parser.ChatParser
+import com.android.multistreamchat.twitch_chat.chat_emotes.TwitchEmotesManager
 import kotlinx.coroutines.channels.Channel
 
 class TwitchOutputHandler(chatParser: ChatParser, emotesManager: EmotesManager<*,*>, badgesManager: BadgesManager<*>) : ChatOutputHandler(chatParser, emotesManager, badgesManager) {

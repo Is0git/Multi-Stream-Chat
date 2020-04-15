@@ -8,4 +8,8 @@ import kotlinx.coroutines.channels.Channel
 abstract class ChatOutputHandler(var chatParser: ChatParser, var emotesManager: EmotesManager<*, *>, var badgesManager: BadgesManager<*>)  {
 
     abstract suspend fun handleUserMessage(channel: Channel<ChatParser.Message>, rawMessage: String)
+
+    fun clear() {
+        badgesManager.clear()
+    }
 }

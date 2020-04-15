@@ -21,22 +21,16 @@ abstract class EmotesManager<K, T : EmotesManager.Emote>(var emoteStateListenerL
 
     abstract suspend fun getEmoteDrawable(emote: T) : Drawable
 
-    fun clear() {
-        emotesDownloadJob?.run {
-            cancel()
-            null
-        }
-    }
-
     abstract suspend fun getEmote(id: Int) : T
 
     abstract suspend fun createEmoteSpannable(message: String, emotes: Array<T?>) : Spannable
 
     open class Emote(var code: String? = null,  var imageUrl: String? = null)
 
-    fun cancelJob() {
+    fun clear() {
         emotesDownloadJob?.cancel().also { emotesDownloadJob = null }
         singleEmoteDownloadJob?.cancel().also { singleEmoteDownloadJob = null }
+        emoteStateListenerList = null
     }
 
 }

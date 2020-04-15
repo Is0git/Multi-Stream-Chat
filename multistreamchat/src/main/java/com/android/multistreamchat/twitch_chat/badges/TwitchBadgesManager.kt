@@ -1,9 +1,9 @@
 package com.android.multistreamchat.twitch_chat.badges
 
-import com.android.multistreamchat.twitch_chat.api.twitch.models.badges.BadgeItem
-import com.android.multistreamchat.twitch_chat.api.twitch.services.BadgeService
 import com.android.multistreamchat.chat.badges.BadgesManager
 import com.android.multistreamchat.twitch_chat.api.RetrofitInstance
+import com.android.multistreamchat.twitch_chat.api.twitch.models.badges.BadgeItem
+import com.android.multistreamchat.twitch_chat.api.twitch.services.BadgeService
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

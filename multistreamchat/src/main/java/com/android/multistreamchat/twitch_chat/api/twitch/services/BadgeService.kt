@@ -1,10 +1,12 @@
 package com.android.multistreamchat.twitch_chat.api.twitch.services
 
 import com.android.multistreamchat.twitch_chat.api.twitch.models.badges.BadgeItem
-import com.android.multistreamchat.twitch_chat.api.twitch.models.badges.TwitchBadges
 import com.android.multistreamchat.twitch_chat.api.twitch.models.channel.Channel
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface BadgeService {
     @GET("kraken/chat/{id}/badges")

@@ -1,7 +1,5 @@
 package com.android.multistreamchat.twitch_chat.api.twitch.models.channel
 
-import com.squareup.moshi.Json
-
 data class Channel(
 
 

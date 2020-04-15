@@ -31,7 +31,7 @@ abstract class ChatConnector(var host: String, var port: Int) {
         initStream(channelName)
     }
 
-    fun clear() {
+    open fun clear() {
         socket?.close().also { socket = null }
     }
 

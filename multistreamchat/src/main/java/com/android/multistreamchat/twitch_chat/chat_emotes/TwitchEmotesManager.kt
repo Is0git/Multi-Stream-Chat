@@ -7,10 +7,10 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
 import androidx.core.graphics.drawable.toBitmap
-import com.android.multistreamchat.twitch_chat.api.RetrofitInstance
-import com.android.multistreamchat.twitch_chat.api.twitch.services.EmotesService
 import com.android.multistreamchat.chat.chat_emotes.EmotesManager
 import com.android.multistreamchat.chat.listeners.EmoteStateListener
+import com.android.multistreamchat.twitch_chat.api.RetrofitInstance
+import com.android.multistreamchat.twitch_chat.api.twitch.services.EmotesService
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel

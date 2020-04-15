@@ -9,7 +9,6 @@ import kotlinx.coroutines.channels.Channel
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.Writer
-import java.lang.Exception
 
 class TwitchChatReader(
     host: String,
