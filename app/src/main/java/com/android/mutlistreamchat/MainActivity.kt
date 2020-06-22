@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.android.multistreamchat.chat.Chat
-import com.android.multistreamchat.chat.chat_parser.ChatParser
-import com.android.multistreamchat.chat.listeners.DataListener
-import com.android.multistreamchat.chat.listeners.EmoteStateListener
-import com.android.multistreamchat.twitch_chat.chat_emotes.TwitchEmotesManager
-import com.android.multistreamchat.twitch_chat.chat_parser.TwitchChatParser
+import com.android.chat.chat.Chat
+import com.android.chat.chat.chat_parser.ChatParser
+import com.android.chat.chat.listeners.DataListener
+import com.android.chat.chat.listeners.EmoteStateListener
+import com.android.chat.twitch_chat.chat_emotes.TwitchEmotesManager
+import com.android.chat.twitch_chat.chat_parser.TwitchChatParser
 import com.android.mutlistreamchat.databinding.ActivityMainBinding
+import com.android.mutlistreamchat.databinding.ActivityMainBindingImpl
 
 class MainActivity : AppCompatActivity() {
 

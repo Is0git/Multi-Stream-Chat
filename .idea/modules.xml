@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/MutliStreamChat.iml" filepath="$PROJECT_DIR$/MutliStreamChat.iml" group="MutliStreamChat" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="MutliStreamChat/app" />
       <module fileurl="file://$PROJECT_DIR$/multistreamchat/multistreamchat.iml" filepath="$PROJECT_DIR$/multistreamchat/multistreamchat.iml" group="MutliStreamChat/multistreamchat" />
+      <module fileurl="file://$PROJECT_DIR$/multistreamchat/skadedlw.iml" filepath="$PROJECT_DIR$/multistreamchat/skadedlw.iml" group="MutliStreamChat/multistreamchat" />
     </modules>
   </component>
 </project>

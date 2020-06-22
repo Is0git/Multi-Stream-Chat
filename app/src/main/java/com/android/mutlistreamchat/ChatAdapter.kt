@@ -4,7 +4,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.android.multistreamchat.chat.chat_parser.ChatParser
+import com.android.chat.chat.chat_parser.ChatParser
 import com.android.mutlistreamchat.databinding.ChatLayoutBinding
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.ExperimentalCoroutinesApi
